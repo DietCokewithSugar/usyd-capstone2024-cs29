@@ -1,0 +1,32 @@
+.team-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.team-member {
+  text-align: center;
+  margin-bottom: 30px;
+  flex: 1 1 30%;
+  max-width: 30%;
+  padding: 20px;
+}
+
+.team-member img {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.team-member h3 {
+  margin-top: 15px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.team-member p {
+  font-size: 16px;
+  color: #666;
+}

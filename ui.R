@@ -3,14 +3,41 @@ library(shiny)
 ui <- navbarPage("CS29",
                  tabPanel("Home",
                           fluidPage(
-                            titlePanel("Home"),
-                            p("This is the Home page.")
+                            sidebarLayout(
+                              sidebarPanel(
+                                userInput_ui("userInput")
+                              ),
+                              mainPanel(
+                                horizontalStack_ui("horizontalStack")
+                              )
+                            )
                           )
                  ),
                  tabPanel("About Us",
                           fluidPage(
-                            titlePanel("About Us"),
-                            p("This is the About Us page.")
+                            style = "margin-top: 20px;",
+                            sidebarLayout(
+                              sidebarPanel(
+                                h3("Explore More"),
+                                p("Check out our projects and services."),
+                                tags$ul(
+                                  tags$li(a(href = "#", "Our Projects")),
+                                  tags$li(a(href = "#", "Our Services")),
+                                  tags$li(a(href = "#", "Contact Us"))
+                                ),
+                                width = 3
+                              ),
+                              mainPanel(
+                                fluidPage(
+                                  tags$iframe(
+                                    src = "about.html",
+                                    width = "100%",
+                                    height = "600px",
+                                    frameborder = 0
+                                  )
+                                )
+                              )
+                            )
                           )
                  ),
                  tabPanel("Help",
