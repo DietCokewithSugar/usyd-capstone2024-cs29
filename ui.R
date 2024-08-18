@@ -1,25 +1,69 @@
 library(shiny)
+library(jpeg)
 
-ui <- navbarPage("CS29",
+ui <- navbarPage("Tile app",
+                 includeCSS("styles.css"),
                  tabPanel("Home",
                           fluidPage(
-                            titlePanel("Welcome to the CS29 Homepage"),
-                            p("This is the Home page where you can find the latest updates and information about the CS29 project."),
+                            # 顶部欢迎信息
+                            titlePanel("Welcome to the Tile app Homepage"),
+                            p("This is the Home page where you can find the latest updates and information about the Tile app project."),
                             
-                            # 添加一个子标题
-                            h3("Project Overview"),
-                            p("The CS29 project is focused on building a user-friendly interface that meets the needs of our clients and stakeholders."),
+                            # 产品背景
+                            h3("Product Background"),
+                            wellPanel(
+                              p("Our tile app is designed to provide the best user experience in customizing and designing tiles. Our main objective is to meet the needs of designers and homeowners alike.")
+                            ),
                             
-                            # 添加一个图片
-                            img(src = "https://via.placeholder.com/400x200", alt = "Project Image", height = "200px"),
+                            # 功能介绍
+                            h3("Features"),
+                            fluidRow(
+                              column(4, 
+                                     wellPanel(
+                                       icon("check-circle"), 
+                                       h4("Easy Customization"),
+                                       p("Easily customize your tiles with our intuitive tools.")
+                                     )),
+                              column(4, 
+                                     wellPanel(
+                                       icon("palette"), 
+                                       h4("Variety of Designs"),
+                                       p("Access a wide range of designs suitable for any space.")
+                                     )),
+                              column(4, 
+                                     wellPanel(
+                                       icon("shopping-cart"), 
+                                       h4("Easy Ordering"),
+                                       p("Order your custom tiles directly from the app.")
+                                     ))
+                            ),
                             
-                            # 添加一个表格
-                            h3("Key Milestones"),
-                            tableOutput("milestonesTable"),
+                            # 产品作用
+                            h3("How it Works"),
+                            p("Our app helps you visualize, customize, and order tiles for your space. Whether you are an architect, interior designer, or homeowner, our tool simplifies the process."),
+
                             
-                            # 添加一个链接
+                            # Learn More 链接
                             h3("Learn More"),
                             p("For more details, visit our ", a(href = "https://example.com", "official website"), ".")
+                          )
+                 ),
+                 tabPanel("Design Gallery",
+                          fluidPage(
+                            titlePanel("Design Gallery"),
+                            p("This is the Design Gallery page.")
+                          )
+                 ),
+                 tabPanel("Custom Design",
+                          fluidPage(
+                            titlePanel("Custom Design"),
+                            p("This is the Custom Design page.")
+                          )
+                 ),
+                 tabPanel("FAQ",
+                          fluidPage(
+                            titlePanel("FAQ"),
+                            p("This is the FAQ page.")
                           )
                  ),
                  tabPanel("About Us",
@@ -34,10 +78,5 @@ ui <- navbarPage("CS29",
                             p("This is the Help page.")
                           )
                  ),
-                 tabPanel("Contact",
-                          fluidPage(
-                            titlePanel("Contact"),
-                            p("This is the Contact page.")
-                          )
-                 )
+                 
 )
