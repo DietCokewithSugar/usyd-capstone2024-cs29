@@ -1,107 +1,124 @@
+source("R/obstacles.R")
+
 userInput_ui <- function(id) {
   ns <- NS(id)
   
   tagList(
+    fluidRow(column(
+      12,
+      selectInput(
+        ns("pattern_dropdown"),
+        "Select a Layout Option:",
+        choices = c("Stack", "Herringbone", "Basketweave", "Lattice"),
+        selected = "Stack"
+      )
+    )),
     fluidRow(
-      column(6,
-             numericInput(
-               ns("wall_height_num"),
-               "Wall Height:",
-               value = 300,
-               min = 100,
-               max = 10000
-             ),
-             sliderInput(
-               ns("wall_height"),
-               "",
-               min = 100,
-               max = 10000,
-               value = 300
-             )
+      column(
+        6,
+        numericInput(
+          ns("wall_height_num"),
+          "Wall Height:",
+          value = 300,
+          min = 100,
+          max = 10000
+        ),
+        sliderInput(
+          ns("wall_height"),
+          "",
+          min = 100,
+          max = 10000,
+          value = 300
+        )
       ),
-      column(6,
-             numericInput(
-               ns("wall_width_num"),
-               "Wall Width:",
-               value = 500,
-               min = 100,
-               max = 10000
-             ),
-             sliderInput(
-               ns("wall_width"),
-               "",
-               min = 100,
-               max = 10000,
-               value = 500
-             )
+      column(
+        6,
+        numericInput(
+          ns("wall_width_num"),
+          "Wall Width:",
+          value = 500,
+          min = 100,
+          max = 10000
+        ),
+        sliderInput(
+          ns("wall_width"),
+          "",
+          min = 100,
+          max = 10000,
+          value = 500
+        )
       )
     ),
     fluidRow(
-      column(6,
-             numericInput(
-               ns("tile_height_num"),
-               "Tile Height:",
-               value = 50,
-               min = 10,
-               max = 1000
-             ),
-             sliderInput(
-               ns("tile_height"),
-               "",
-               min = 10,
-               max = 1000,
-               value = 50
-             )
+      column(
+        6,
+        numericInput(
+          ns("tile_height_num"),
+          "Tile Height:",
+          value = 50,
+          min = 10,
+          max = 1000
+        ),
+        sliderInput(
+          ns("tile_height"),
+          "",
+          min = 10,
+          max = 1000,
+          value = 50
+        )
       ),
-      column(6,
-             numericInput(
-               ns("tile_width_num"),
-               "Tile Width:",
-               value = 50,
-               min = 10,
-               max = 1000
-             ),
-             sliderInput(
-               ns("tile_width"),
-               "",
-               min = 10,
-               max = 1000,
-               value = 50
-             )
+      column(
+        6,
+        numericInput(
+          ns("tile_width_num"),
+          "Tile Width:",
+          value = 50,
+          min = 10,
+          max = 1000
+        ),
+        sliderInput(
+          ns("tile_width"),
+          "",
+          min = 10,
+          max = 1000,
+          value = 50
+        )
       )
     ),
     fluidRow(
-      column(6,
-             numericInput(
-               ns("tile_spacing_num"),
-               "Tile Spacing:",
-               value = 5,
-               min = 0,
-               max = 200
-             ),
-             sliderInput(
-               ns("tile_spacing"),
-               "",
-               min = 0,
-               max = 200,
-               value = 5
-             )
+      column(
+        6,
+        numericInput(
+          ns("tile_spacing_num"),
+          "Tile Spacing:",
+          value = 5,
+          min = 0,
+          max = 200
+        ),
+        sliderInput(
+          ns("tile_spacing"),
+          "",
+          min = 0,
+          max = 200,
+          value = 5
+        )
       ),
-      column(6,
-             numericInput(
-               ns("offset_num"),
-               "Offset:",
-               value = 25,
-               min = 0,
-               max = 500
-             ),
-             sliderInput(
-               ns("offset"),
-               "",
-               min = 0,
-               max = 500,
-               value = 25
-             )
+      column(
+        6,
+        numericInput(
+          ns("offset_num"),
+          "Offset:",
+          value = 25,
+          min = 0,
+          max = 500
+        ),
+        sliderInput(
+          ns("offset"),
+          "",
+          min = 0,
+          max = 500,
+          value = 25
+        )
       )
     )
   )
@@ -151,13 +168,31 @@ userInput_server <- function(id) {
     observeEvent(input$offset, {
       updateNumericInput(session, "offset_num", value = input$offset)
     })
+    observeEvent(input$pattern_dropdown, {
+      pattern_dropdown_value <- input$pattern_dropdown
+    })
     
-    wall_height <- reactive({ input$wall_height })
-    wall_width <- reactive({ input$wall_width })
-    tile_height <- reactive({ input$tile_height })
-    tile_width <- reactive({ input$tile_width })
-    tile_spacing <- reactive({ input$tile_spacing })
-    offset <- reactive({ input$offset })
+    wall_height <- reactive({
+      input$wall_height
+    })
+    wall_width <- reactive({
+      input$wall_width
+    })
+    tile_height <- reactive({
+      input$tile_height
+    })
+    tile_width <- reactive({
+      input$tile_width
+    })
+    tile_spacing <- reactive({
+      input$tile_spacing
+    })
+    offset <- reactive({
+      input$offset
+    })
+    pattern_dropdown <- reactive({
+      input$pattern_dropdown
+    })
     
     return(
       list(
@@ -166,7 +201,8 @@ userInput_server <- function(id) {
         tile_height = tile_height,
         tile_width = tile_width,
         tile_spacing = tile_spacing,
-        offset = offset
+        offset = offset,
+        pattern_dropdown = pattern_dropdown
       )
     )
   })

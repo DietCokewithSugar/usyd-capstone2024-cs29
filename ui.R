@@ -5,10 +5,11 @@ ui <- navbarPage("CS29",
                           fluidPage(
                             sidebarLayout(
                               sidebarPanel(
-                                userInput_ui("userInput")
+                                userInput_ui("userInput"),
+                                obstaclesUI("obstacles")
                               ),
                               mainPanel(
-                                horizontalStack_ui("horizontalStack")
+                                uiOutput("dynamicUI") 
                               )
                             )
                           )
