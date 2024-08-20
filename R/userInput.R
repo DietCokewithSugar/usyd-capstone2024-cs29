@@ -21,13 +21,21 @@ userInput_ui <- function(id) {
           "Wall Height:",
           value = 300,
           min = 100,
+<<<<<<< Updated upstream
           max = 10000
+=======
+          max = 900
+>>>>>>> Stashed changes
         ),
         sliderInput(
           ns("wall_height"),
           "",
           min = 100,
+<<<<<<< Updated upstream
           max = 10000,
+=======
+          max = 900,
+>>>>>>> Stashed changes
           value = 300
         )
       ),
@@ -38,13 +46,21 @@ userInput_ui <- function(id) {
           "Wall Width:",
           value = 500,
           min = 100,
+<<<<<<< Updated upstream
           max = 10000
+=======
+          max = 1200
+>>>>>>> Stashed changes
         ),
         sliderInput(
           ns("wall_width"),
           "",
           min = 100,
+<<<<<<< Updated upstream
           max = 10000,
+=======
+          max = 1200,
+>>>>>>> Stashed changes
           value = 500
         )
       )
@@ -74,13 +90,21 @@ userInput_ui <- function(id) {
           "Tile Width:",
           value = 50,
           min = 10,
+<<<<<<< Updated upstream
           max = 1000
+=======
+          max = 150
+>>>>>>> Stashed changes
         ),
         sliderInput(
           ns("tile_width"),
           "",
           min = 10,
+<<<<<<< Updated upstream
           max = 1000,
+=======
+          max = 150,
+>>>>>>> Stashed changes
           value = 50
         )
       )
@@ -93,13 +117,21 @@ userInput_ui <- function(id) {
           "Tile Spacing:",
           value = 5,
           min = 0,
+<<<<<<< Updated upstream
           max = 200
+=======
+          max = 20
+>>>>>>> Stashed changes
         ),
         sliderInput(
           ns("tile_spacing"),
           "",
           min = 0,
+<<<<<<< Updated upstream
           max = 200,
+=======
+          max = 20,
+>>>>>>> Stashed changes
           value = 5
         )
       ),
@@ -116,7 +148,11 @@ userInput_ui <- function(id) {
           ns("offset"),
           "",
           min = 0,
+<<<<<<< Updated upstream
           max = 500,
+=======
+          max = 100,
+>>>>>>> Stashed changes
           value = 25
         )
       )
