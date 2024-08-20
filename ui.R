@@ -2,10 +2,39 @@ library(shiny)
 
 ui <- navbarPage("CS29",
                  tabPanel("Home",
+<<<<<<< Updated upstream
                           fluidPage(
                             titlePanel("Home"),
                             p("This is the Home page.")
                           )
+=======
+                          
+                          htmlTemplate("www/home.html")
+                          
+                 ),
+                 tabPanel("algorithm ",
+                          fluidPage(
+                            sidebarLayout(
+                              sidebarPanel(
+                                userInput_ui("userInput"),
+                                obstaclesUI("obstacles")
+                              ),
+                              mainPanel(
+                                uiOutput("dynamicUI") 
+                              )
+                            )
+                          )
+                 ),
+                 tabPanel("Gallery",
+                          
+                          htmlTemplate("www/Design_Gallery.html")
+                          
+                 ),
+                 tabPanel("Design",
+                          
+                          htmlTemplate("www/customer_design.html")
+                          
+>>>>>>> Stashed changes
                  ),
                  tabPanel("About Us",
                           fluidPage(
