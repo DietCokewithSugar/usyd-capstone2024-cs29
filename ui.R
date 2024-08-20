@@ -2,14 +2,8 @@ library(shiny)
 
 ui <- navbarPage("CS29",
                  tabPanel("Home",
-<<<<<<< Updated upstream
-                          fluidPage(
-                            titlePanel("Home"),
-                            p("This is the Home page.")
-                          )
-=======
                           
-                          htmlTemplate("www/home.html")
+                     htmlTemplate("www/home.html")
                           
                  ),
                  tabPanel("algorithm ",
@@ -34,7 +28,6 @@ ui <- navbarPage("CS29",
                           
                           htmlTemplate("www/customer_design.html")
                           
->>>>>>> Stashed changes
                  ),
                  tabPanel("About Us",
                           fluidPage(
