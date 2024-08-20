@@ -2,18 +2,18 @@ library(shiny)
 library(jpeg)
 
 ui <- navbarPage("Tile app",
-                 includeCSS("styles.css"),
+                
                  tabPanel("Home",
                           
                           htmlTemplate("www/home.html")
                           
                  ),
-                 tabPanel("Design Gallery",
+                 tabPanel("Gallery",
                           
                           htmlTemplate("www/Design_Gallery.html")
                           
                  ),
-                 tabPanel("Customer Design",
+                 tabPanel("Design",
                           
                           htmlTemplate("www/customer_design.html")
                           

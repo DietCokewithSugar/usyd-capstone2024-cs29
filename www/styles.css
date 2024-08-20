@@ -1,0 +1,120 @@
+body {
+
+  background-size: cover; /* 背景图片覆盖整个页面 */
+  background-position: center; /* 背景图片居中 */
+  background-repeat: no-repeat; /* 背景图片不重复 */
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+
+}
+
+
+.container-customer {
+    padding-left: 100px !important;  /* 移除左侧内边距 */
+    padding-right: 100px !important; /* 移除右侧内边距 */
+}
+
+.navbar {
+    min-height: 100px; /* 增加导航栏的最小高度 */
+    background-color: #2c3e50; /* 导航栏设置了背景颜色为#2c3e50。#2c3e50是一种深蓝灰色 */
+    border-radius: 0; /* 导航栏的圆角半径设置为0，意味着导航栏的边角是直角的，而不是圆角。 */
+    justify-content: space-between; /* 在导航栏中均匀分布项目 */
+    width: 100%; /* 导航栏项目容器占据100%的宽度 */
+
+}
+
+.navbar-nav > li {
+    width: 130px;
+    text-align: center; /* 居中对齐导航项的文本 */
+}
+
+.navbar-nav > li > a {
+    height: 100px; /* 链接的高度与导航栏一致 */
+    line-height: 80px; /* 让文本垂直居中 */
+    font-size: 18px; /* 增大字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
+
+}
+
+.navbar .navbar-brand, .navbar .navbar-nav > li > a {
+  color:  #ffffff;
+}
+
+.navbar-brand {
+    width: 200px;
+    text-align: center; /* 居中对齐导航项的文本 */
+    height: 100px; /* 品牌标识的高度与导航栏一致 */
+    line-height: 80px; /* 让品牌标识垂直居中 */
+    font-size: 18px; /* 增大字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
+
+}
+
+.navbar-nav > li.active > a {
+    background-color: #ecf0f1; /* 选中状态的背景颜色 */
+    color: black !important;   /* 选中状态的文字颜色 */
+    height: 100px; /* 确保选中状态匹配导航栏的高度 */
+    line-height:80px; /* 确保选中状态文本垂直居中 */
+}
+
+.slideshow-container {
+    width: 800px;        /* 设置幻灯片容器的最大宽度为1000像素 */
+    height: 400px; 
+    margin: auto;             /* 将容器水平居中显示 */
+}
+
+.mySlides {
+    display: none;            /* 初始状态下隐藏所有幻灯片 */
+}
+
+.mySlides img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 等比例缩放图片并裁剪以填满容器 */
+}
+
+.fade {
+    -webkit-animation-name: fade;       /* 为支持Webkit内核的浏览器指定动画名称为fade */
+    -webkit-animation-duration: 1.5s;   /* 为Webkit内核浏览器设置动画的持续时间为1.5秒 */
+    animation-name: fade;               /* 为其他浏览器指定动画名称为fade */
+    animation-duration: 1.5s;           /* 设置动画的持续时间为1.5秒 */
+}
+
+@keyframes fade {
+    from {opacity: .4}  /* 动画开始时的透明度为40% */
+    to {opacity: 1}     /* 动画结束时的透明度为100%（完全不透明） */
+}
+
+
+.carousel-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-item {
+  width: 80%; /* 设置宽度为80%，使得左右边可以部分显示其他图片 */
+  margin: auto;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%; /* 控制器占用的宽度 */
+}
+
+.carousel img {
+  object-fit: contain; /* 保持图片的原始比例 */
+  width: 100%;
+}
+
+
+h1 {
+  color: black;
+  font-size: 40px; /* 增大字体大小 */
+  font-weight: bold; /* 设置字体加粗 */
+}
+
+
+h3 {
+  color: #2c3e50;
+}
