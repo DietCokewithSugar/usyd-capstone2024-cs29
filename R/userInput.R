@@ -172,13 +172,13 @@ userInput_server <- function(id) {
       pattern_dropdown_value <- input$pattern_dropdown
     })
 
-    # 使用 debounce 延迟响应
-    wall_height <- debounce(reactive(input$wall_height), millis = 300)
-    wall_width <- debounce(reactive(input$wall_width), millis = 300)
-    tile_height <- debounce(reactive(input$tile_height), millis = 300)
-    tile_width <- debounce(reactive(input$tile_width), millis = 300)
-    tile_spacing <- debounce(reactive(input$tile_spacing), millis = 300)
-    offset <- debounce(reactive(input$offset), millis = 300)
+    # use debounce to postpone response
+    wall_height <- debounce(reactive(input$wall_height), millis = 500)
+    wall_width <- debounce(reactive(input$wall_width), millis = 500)
+    tile_height <- debounce(reactive(input$tile_height), millis = 500)
+    tile_width <- debounce(reactive(input$tile_width), millis = 500)
+    tile_spacing <- debounce(reactive(input$tile_spacing), millis = 500)
+    offset <- debounce(reactive(input$offset), millis = 500)
     pattern_dropdown <- reactive({
       input$pattern_dropdown
     })

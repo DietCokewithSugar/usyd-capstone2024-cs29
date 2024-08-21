@@ -148,63 +148,66 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
         x_position <- x_position + th + ts
         y_position <- y_position - th - ts
       }
+
+      polygon(
+        c(
+          box_x,
+          box_x,
+          box_x + ww,
+          box_x + ww
+        ),
+        c(
+          box_y,
+          box_y + wh,
+          box_y + wh,
+          box_y
+        ),
+        border = "red",
+        lwd = 3,
+        col = NA
+      )
+
+      for (obstacle in obstacles()) {
+        obstacle_center_x <- (obstacle$left + obstacle$right) / 2
+        obstacle_center_y <- (obstacle$top + obstacle$bottom) / 2
+
+        obstacle_x <- box_x + obstacle_center_x - obstacle$width / 2
+        obstacle_y <- box_y + obstacle_center_y - obstacle$height / 2
+
+        rect(
+          obstacle_x,
+          obstacle_y,
+          obstacle_x + obstacle$width,
+          obstacle_y + obstacle$height,
+          col = "darkgray",
+          border = "black"
+        )
+      }
+
+      # Top (adjust with horizontal position)
+      rect(box_x, box_y + wh, box_x + ww, wh + 100, col = rgb(1, 1, 1, 1), border = NA)
+
+      # Left
+      rect(-100, box_y, box_x, box_y + wh, col = rgb(1, 1, 1, 1), border = NA)
+
+      # Right
+      rect(box_x + ww, box_y, ww + 100, box_y + wh, col = rgb(1, 1, 1, 1), border = NA)
+
+      # Bottom (adjust with horizontal position)
+      rect(box_x, -100, box_x + ww, box_y, col = rgb(1, 1, 1, 1), border = NA)
+
+      # Top-left corner
+      rect(-100, box_y + wh, box_x, wh + 100, col = rgb(1, 1, 1, 1), border = NA)
+
+      # Top-right corner
+      rect(box_x + ww, box_y + wh, ww + 100, wh + 100, col = rgb(1, 1, 1, 1), border = NA)
+
+      # Bottom-left corner
+      rect(-100, -100, box_x, box_y, col = rgb(1, 1, 1, 1), border = NA)
+
+      # Bottom-right corner
+      rect(box_x + ww, -100, ww + 100, box_y, col = rgb(1, 1, 1, 1), border = NA)
+
     }, height = wall_height(), width = wall_width())
   })
 }
-
-
-
-
-
-
-
-
-
-
-# generators[['Herringbone']] <- \(area, intGrout, pattern=1, scale) {
-#   x <- area[['x']][[1]]
-#   y <- area[['y']][[1]]
-#   # Based on vertical tile
-#   height <- 1 + intGrout
-#   width <- 0.5
-#   horiTile <- makeTile(height,width,scale)
-#   vertTile <- makeTile(width,height,scale)
-#   while (y < area[['y']][[2]]) {
-#     while (x < area[['x']][[2]]) {
-#       if (pattern == 1) {
-#         # Vertical, Skip, Horizontal
-#         checkDrawTile(vertTile,area,x,y,scale)
-#         x <- x + (width*2) + (intGrout*2)
-#         checkDrawTile(horiTile,area,x,y,scale)
-#         x <- x + height + intGrout
-#       } else if (pattern == 2) {
-#         # Skip, Horizontal, Vertical
-#         x <- x + width + intGrout
-#         checkDrawTile(horiTile,area,x,y,scale)
-#         x <- x + height + intGrout
-#         checkDrawTile(vertTile,area,x,y,scale)
-#         x <- x + width + intGrout
-#       } else if (pattern == 3) {
-#         # Horizontal, Vertical, Skip
-#         checkDrawTile(horiTile,area,x,y,scale)
-#         x <- x + height + intGrout
-#         checkDrawTile(vertTile,area,x,y,scale)
-#         x <- x + (width*2) + (intGrout*2)
-#       } else { # pattern == 4
-#         # Skip, Vertical, Skip, Horizontal
-#         x <- x + width + intGrout
-#         checkDrawTile(vertTile,area,x,y,scale)
-#         x <- x + (width*2) + (intGrout*2)
-#         checkDrawTile(horiTile,area,x,y,scale)
-#         x <- x + (height-width)
-#       }
-#     }
-#     # Go up a level
-#     y <- y + width + intGrout
-#     x <- area[['x']][[1]]
-#     pattern <- pattern + 1
-#     if (pattern == 5) {
-#       pattern <- 1
-#     }
-#   }
-# }
