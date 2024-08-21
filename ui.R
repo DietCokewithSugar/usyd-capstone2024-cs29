@@ -1,32 +1,50 @@
 library(shiny)
-library(jpeg)
 
-ui <- navbarPage("Tile app",
-                
+ui <- navbarPage("CS29",
                  tabPanel("Home",
-                          
-                          htmlTemplate("www/home.html")
-                          
-                 ),
-                 tabPanel("Gallery",
-                          
-                          htmlTemplate("www/Design_Gallery.html")
-                          
-                 ),
-                 tabPanel("Design",
-                          
-                          htmlTemplate("www/customer_design.html")
-                          
+                          fluidPage(
+                            sidebarLayout(
+                              sidebarPanel(
+                                userInput_ui("userInput"),
+                                obstaclesUI("obstacles")
+                              ),
+                              mainPanel(
+                                uiOutput("dynamicUI") 
+                              )
+                            )
+                          )
                  ),
                  tabPanel("About Us",
-                          
-                          htmlTemplate("www/about_us.html")
-                          
+                          fluidPage(
+                            style = "margin-top: 20px;",
+                            sidebarLayout(
+                              sidebarPanel(
+                                h3("Explore More"),
+                                p("Check out our projects and services."),
+                                tags$ul(
+                                  tags$li(a(href = "#", "Our Projects")),
+                                  tags$li(a(href = "#", "Our Services")),
+                                  tags$li(a(href = "#", "Contact Us"))
+                                ),
+                                width = 3
+                              ),
+                              mainPanel(
+                                fluidPage(
+                                  tags$iframe(
+                                    src = "about.html",
+                                    width = "100%",
+                                    height = "600px",
+                                    frameborder = 0
+                                  )
+                                )
+                              )
+                            )
+                          )
                  ),
                  tabPanel("Help",
-                          
-                          htmlTemplate("www/help.html")
-                          
-                 ),
-                 
+                          fluidPage(
+                            titlePanel("Help"),
+                            p("This is the Help page.")
+                          )
+                 )
 )
