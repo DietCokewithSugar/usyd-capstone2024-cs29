@@ -21,7 +21,7 @@ server <- function(input, output, session) {
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
       herringbone_ui("herringbone")
     } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-      basketweave_ui("basketweave")
+      horizontalStack_ui("basketweave")
     } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
       lattice_ui("lattice")
     } else {
