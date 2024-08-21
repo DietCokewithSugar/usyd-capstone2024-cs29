@@ -21,13 +21,13 @@ userInput_ui <- function(id) {
           "Wall Height:",
           value = 300,
           min = 100,
-          max = 10000
+          max = 900
         ),
         sliderInput(
           ns("wall_height"),
           "",
           min = 100,
-          max = 10000,
+          max = 900,
           value = 300
         )
       ),
@@ -38,13 +38,13 @@ userInput_ui <- function(id) {
           "Wall Width:",
           value = 500,
           min = 100,
-          max = 10000
+          max = 1200
         ),
         sliderInput(
           ns("wall_width"),
           "",
           min = 100,
-          max = 10000,
+          max = 1200,
           value = 500
         )
       )
@@ -74,13 +74,13 @@ userInput_ui <- function(id) {
           "Tile Width:",
           value = 50,
           min = 10,
-          max = 1000
+          max = 150
         ),
         sliderInput(
           ns("tile_width"),
           "",
           min = 10,
-          max = 1000,
+          max = 150,
           value = 50
         )
       )
@@ -93,13 +93,13 @@ userInput_ui <- function(id) {
           "Tile Spacing:",
           value = 5,
           min = 0,
-          max = 200
+          max = 20
         ),
         sliderInput(
           ns("tile_spacing"),
           "",
           min = 0,
-          max = 200,
+          max = 20,
           value = 5
         )
       ),
@@ -116,7 +116,7 @@ userInput_ui <- function(id) {
           ns("offset"),
           "",
           min = 0,
-          max = 500,
+          max = 100,
           value = 25
         )
       )
