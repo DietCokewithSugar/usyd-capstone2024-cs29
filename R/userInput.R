@@ -1,184 +1,256 @@
 source("R/obstacles.R")
+source("R/validation.R")
 
 userInput_ui <- function(id) {
   ns <- NS(id)
   
   tagList(
-    fluidRow(column(
-      12,
-      selectInput(
-        ns("pattern_dropdown"),
-        "Select a Layout Option:",
-        choices = c("Stack", "Herringbone", "Basketweave", "Lattice"),
-        selected = "Stack"
-      )
-    )),
     fluidRow(
       column(
-        6,
-        numericInput(
-          ns("wall_height_num"),
-          "Wall Height:",
-          value = 300,
-          min = 100,
-          max = 900
-        ),
-        sliderInput(
-          ns("wall_height"),
-          "",
-          min = 100,
-          max = 900,
-          value = 300
-        )
-      ),
-      column(
-        6,
-        numericInput(
-          ns("wall_width_num"),
-          "Wall Width:",
-          value = 500,
-          min = 100,
-          max = 1200
-        ),
-        sliderInput(
-          ns("wall_width"),
-          "",
-          min = 100,
-          max = 1200,
-          value = 500
+        12,
+        selectInput(
+          ns("pattern_dropdown"),
+          "Select a Layout Option:",
+          choices = c("Stack", "Herringbone", "Basketweave", "Lattice"),
+          selected = "Stack"
         )
       )
     ),
     fluidRow(
       column(
-        6,
-        numericInput(
-          ns("tile_height_num"),
-          "Tile Height:",
-          value = 50,
-          min = 10,
-          max = 1000
+        12,
+        div(style = "position: relative;",
+            numericInput(
+              ns("wall_height_num"),
+              "Wall Height:",
+              value = 300,
+              min = 100,
+              max = 900,
+              width = '100%'
+            )
         ),
-        sliderInput(
-          ns("tile_height"),
-          "",
-          min = 10,
-          max = 1000,
-          value = 50
-        )
-      ),
-      column(
-        6,
-        numericInput(
-          ns("tile_width_num"),
-          "Tile Width:",
-          value = 50,
-          min = 10,
-          max = 150
-        ),
-        sliderInput(
-          ns("tile_width"),
-          "",
-          min = 10,
-          max = 150,
-          value = 50
+        div(
+          style = "color: red; font-weight: bold;",
+          textOutput(ns("numeric_error_wall_height"))
         )
       )
     ),
     fluidRow(
       column(
-        6,
-        numericInput(
-          ns("tile_spacing_num"),
-          "Tile Spacing:",
-          value = 5,
-          min = 0,
-          max = 20
+        12,
+        div(style = "position: relative;",
+            numericInput(
+              ns("wall_width_num"),
+              "Wall Width:",
+              value = 500,
+              min = 100,
+              max = 1200,
+              width = '100%'
+            )
         ),
-        sliderInput(
-          ns("tile_spacing"),
-          "",
-          min = 0,
-          max = 20,
-          value = 5
+        div(
+          style = "color: red; font-weight: bold;",
+          textOutput(ns("numeric_error_wall_width"))
         )
-      ),
+      )
+    ),
+    fluidRow(
       column(
-        6,
-        numericInput(
-          ns("offset_num"),
-          "Offset:",
-          value = 25,
-          min = 0,
-          max = 500
+        12,
+        div(style = "position: relative;",
+            numericInput(
+              ns("tile_height_num"),
+              "Tile Height:",
+              value = 50,
+              min = 10,
+              max = 1000,
+              width = '100%'
+            )
         ),
-        sliderInput(
-          ns("offset"),
-          "",
-          min = 0,
-          max = 100,
-          value = 25
+        div(
+          style = "color: red; font-weight: bold;",
+          textOutput(ns("numeric_error_tile_height"))
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(style = "position: relative;",
+            numericInput(
+              ns("tile_width_num"),
+              "Tile Width:",
+              value = 50,
+              min = 10,
+              max = 150,
+              width = '100%'
+            )
+        ),
+        div(
+          style = "color: red; font-weight: bold;",
+          textOutput(ns("numeric_error_tile_width"))
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(style = "position: relative;",
+            numericInput(
+              ns("tile_spacing_num"),
+              "Tile Spacing:",
+              value = 5,
+              min = 0,
+              max = 20,
+              width = '100%'
+            )
+        ),
+        div(
+          style = "color: red; font-weight: bold;",
+          textOutput(ns("numeric_error_tile_spacing"))
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(style = "position: relative;",
+            numericInput(
+              ns("offset_num"),
+              "Offset:",
+              value = 25,
+              min = 0,
+              max = 500,
+              width = '100%'
+            )
+        ),
+        div(
+          style = "color: red; font-weight: bold;",
+          textOutput(ns("numeric_error_offset"))
         )
       )
     )
   )
 }
 
+
 userInput_server <- function(id) {
+
   moduleServer(id, function(input, output, session) {
-    # Synchronize the numeric input and slider
+    
     observeEvent(input$wall_height_num, {
-      updateSliderInput(session, "wall_height", value = input$wall_height_num)
+      numeric_error <- validate_numeric_input(input$wall_height_num, min_value = 100, max_value = 900)
+      output$numeric_error_wall_height <- renderText({
+        if (!is.null(numeric_error)) {
+          return(numeric_error)
+          return("")
+        }
+      })
     })
-    observeEvent(input$wall_height, {
-      updateNumericInput(session, "wall_height_num", value = input$wall_height)
-    })
-
+    
     observeEvent(input$wall_width_num, {
-      updateSliderInput(session, "wall_width", value = input$wall_width_num)
+      numeric_error <- validate_numeric_input(input$wall_width_num, min_value = 100, max_value = 1200)
+      output$numeric_error_wall_width <- renderText({
+        if (!is.null(numeric_error)) {
+          return(numeric_error)
+        } else {
+          return("")
+        }
+      })
     })
-    observeEvent(input$wall_width, {
-      updateNumericInput(session, "wall_width_num", value = input$wall_width)
-    })
-
+    
     observeEvent(input$tile_height_num, {
-      updateSliderInput(session, "tile_height", value = input$tile_height_num)
+      numeric_error <- validate_numeric_input(input$tile_height_num, min_value = 10, max_value = 1000)
+      output$numeric_error_tile_height <- renderText({
+        if (!is.null(numeric_error)) {
+          return(numeric_error)
+        } else {
+          return("")
+        }
+      })
     })
-    observeEvent(input$tile_height, {
-      updateNumericInput(session, "tile_height_num", value = input$tile_height)
-    })
-
+    
     observeEvent(input$tile_width_num, {
-      updateSliderInput(session, "tile_width", value = input$tile_width_num)
+      numeric_error <- validate_numeric_input(input$tile_width_num, min_value = 10, max_value = 150)
+      output$numeric_error_tile_width <- renderText({
+        if (!is.null(numeric_error)) {
+          return(numeric_error)
+        } else {
+          return("")
+        }
+      })
     })
-    observeEvent(input$tile_width, {
-      updateNumericInput(session, "tile_width_num", value = input$tile_width)
-    })
-
+    
     observeEvent(input$tile_spacing_num, {
-      updateSliderInput(session, "tile_spacing", value = input$tile_spacing_num)
+      numeric_error <- validate_numeric_input(input$tile_spacing_num, min_value = 0, max_value = 20)
+      output$numeric_error_tile_spacing <- renderText({
+        if (!is.null(numeric_error)) {
+          return(numeric_error)
+        } else {
+          return("")
+        }
+      })
     })
-    observeEvent(input$tile_spacing, {
-      updateNumericInput(session, "tile_spacing_num", value = input$tile_spacing)
-    })
-
+    
     observeEvent(input$offset_num, {
-      updateSliderInput(session, "offset", value = input$offset_num)
+      numeric_error <- validate_numeric_input(input$offset_num, min_value = 0, max_value = 500)
+      output$numeric_error_offset <- renderText({
+        if (!is.null(numeric_error)) {
+          return(numeric_error)
+        } else {
+          return("")
+        }
+      })
     })
-    observeEvent(input$offset, {
-      updateNumericInput(session, "offset_num", value = input$offset)
-    })
-    observeEvent(input$pattern_dropdown, {
-      pattern_dropdown_value <- input$pattern_dropdown
-    })
-
-    # use debounce to postpone response
-    wall_height <- debounce(reactive(input$wall_height), millis = 500)
-    wall_width <- debounce(reactive(input$wall_width), millis = 500)
-    tile_height <- debounce(reactive(input$tile_height), millis = 500)
-    tile_width <- debounce(reactive(input$tile_width), millis = 500)
-    tile_spacing <- debounce(reactive(input$tile_spacing), millis = 500)
-    offset <- debounce(reactive(input$offset), millis = 500)
+    
+    wall_height <- debounce(reactive({
+      if (is.null(validate_numeric_input(input$wall_height_num, min_value = 100, max_value = 900))) {
+        input$wall_height_num
+      } else {
+        300
+      }
+    }), millis = 500)
+    
+    wall_width <- debounce(reactive({
+      if (is.null(validate_numeric_input(input$wall_width_num, min_value = 100, max_value = 1200))) {
+        input$wall_width_num
+      } else {
+        500
+      }
+    }), millis = 500)
+    
+    tile_height <- debounce(reactive({
+      if (is.null(validate_numeric_input(input$tile_height_num, min_value = 10, max_value = 1000))) {
+        input$tile_height_num
+      } else {
+        50
+      }
+    }), millis = 500)
+    
+    tile_width <- debounce(reactive({
+      if (is.null(validate_numeric_input(input$tile_width_num, min_value = 10, max_value = 150))) {
+        input$tile_width_num
+      } else {
+        50
+      }
+    }), millis = 500)
+    
+    tile_spacing <- debounce(reactive({
+      if (is.null(validate_numeric_input(input$tile_spacing_num, min_value = 0, max_value = 20))) {
+        input$tile_spacing_num
+      } else {
+        5
+      }
+    }), millis = 500)
+    
+    offset <- debounce(reactive({
+      if (is.null(validate_numeric_input(input$offset_num, min_value = 0, max_value = 500))) {
+        input$offset_num
+      } else {
+        25
+      }
+    }), millis = 500)
+    
     pattern_dropdown <- reactive({
       input$pattern_dropdown
     })
@@ -195,4 +267,5 @@ userInput_server <- function(id) {
       )
     )
   })
+
 }
