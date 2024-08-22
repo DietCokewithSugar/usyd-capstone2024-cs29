@@ -10,9 +10,6 @@ server <- function(input, output, session) {
   
   userInput_server_return_values <- userInput_server("userInput")
   obstaclesServer_return_values <- obstaclesServer("obstacles")
-  observe({
-    print(obstaclesServer_return_values())
-  })
 
   output$dynamicUI <- renderUI({
     # Assuming there is a variable `someVar` from the user input that determines which UI to show

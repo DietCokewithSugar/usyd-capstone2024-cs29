@@ -5,17 +5,17 @@ horizontalStack_ui <- function(id) {
       column(
         12,
         div(
-          style = "display: flex; justify-content: center; align-items: center; height: 100%;",  # Center the content
-          uiOutput(ns("dynamicWallPlot"))  # Dynamically generate plotOutput
+          style = "display: flex; justify-content: center; align-items: center; height: 100%;",
+          uiOutput(ns("dynamicWallPlot")) 
         )
       )
     ),
     absolutePanel(
-      bottom = "20px",  # Position the panel near the bottom
+      bottom = "20px",
       left = "50%",
       width = "auto",
       height = "auto",
-      style = "transform: translateX(-50%);",  # Center the panel horizontally
+      style = "transform: translateX(-50%);",
       div(
         style = "display: flex; justify-content: space-between; align-items: center; width: 320px;",  # Adjust width as needed
         actionButton(
@@ -55,7 +55,7 @@ horizontalStack_ui <- function(id) {
 
 horizontalStack_server <- function(id, wall_height, wall_width, tile_height, tile_width, tile_spacing, offset, obstacles) {
   moduleServer(id, function(input, output, session) {
-    ns <- session$ns  # Define ns inside the moduleServer function
+    ns <- session$ns
 
     values <- reactiveValues(
       box_x = 0,
@@ -79,10 +79,8 @@ horizontalStack_server <- function(id, wall_height, wall_width, tile_height, til
     })
     
     observeEvent(input$reset, {
-      values$box_x <- 0  # Reset x position
-      values$box_y <- 0  # Reset y position
-
-      print("reset")
+      values$box_x <- 0 
+      values$box_y <- 0
     })
     
 
@@ -143,19 +141,19 @@ horizontalStack_server <- function(id, wall_height, wall_width, tile_height, til
         lwd = 3,
         col = NA
       )
-
+      
       for (obstacle in obstacles()) {
-        obstacle_center_x <- (obstacle$left + obstacle$right) / 2
-        obstacle_center_y <- (obstacle$top + obstacle$bottom) / 2
-
-        obstacle_x <- box_x + obstacle_center_x - obstacle$width / 2
-        obstacle_y <- box_y + obstacle_center_y - obstacle$height / 2
-
+        obstacle_x <- obstacle$left + box_x
+        obstacle_y <- obstacle$top + box_y
+        
+        top_left_x <- obstacle_x
+        top_left_y <- wh - (obstacle_y + obstacle$height)
+        
         rect(
-          obstacle_x,
-          obstacle_y,
-          obstacle_x + obstacle$width,
-          obstacle_y + obstacle$height,
+          top_left_x,
+          top_left_y,
+          top_left_x + obstacle$width,
+          top_left_y + obstacle$height,
           col = "darkgray",
           border = "black"
         )
