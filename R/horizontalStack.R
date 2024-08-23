@@ -1,3 +1,5 @@
+source("R/obstacles.R")
+
 horizontalStack_ui <- function(id) {
   ns <- NS(id)
   tagList(fluidPage(column(
@@ -164,10 +166,10 @@ horizontalStack_server <- function(id,
       for (obstacle in obstacles()) {
         obstacle_x <- obstacle$left + box_x
         obstacle_y <- obstacle$top + box_y
-        
+
         top_left_x <- obstacle_x
         top_left_y <- wh - (obstacle_y + obstacle$height)
-        
+
         rect(
           top_left_x,
           top_left_y,
