@@ -120,6 +120,62 @@ input[name="r"] {
     object-fit: cover; 
 }
 
+/* week5 */
+ 
+.gallery_container{
+  
+  width: 100%;
+  height: 2500px;
+  
+}
+
+.gallery_row{
+  
+  width: 100%;
+  height: 400px;
+  margin-bottom: 100px; 
+  display: flex;
+  
+}
+.gallery_item{
+  
+  width: 20%;
+  height: 400px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  margin-left: 3%;
+  margin-right: 2%;
+  background-image: url('border.jpg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat; 
+}
+
+.gallery_item img{
+  
+  width: 100%; /* 设置图片宽度为100% */
+  height: 100%; /* 设置图片高度为100% */
+  object-fit: cover; /* 使用object-fit属性使图片按比例填充 */
+  
+}
+
+.gallery_title{
+  position:relative;
+  left:-30px;
+  padding-top: 30px;
+  font-size: 20px; /* 增大字体大小 */
+  font-weight: bold; /* 设置字体加粗 */
+}
+ 
+.gallery_description{
+  position:relative;
+  left:-30px;
+  font-size: 12px;
+}
+/* week5 */
+
 #r1:checked ~ .s1 {
     margin-left: 0;
 }

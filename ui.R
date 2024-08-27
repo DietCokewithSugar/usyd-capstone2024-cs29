@@ -9,7 +9,7 @@ ui <- navbarPage(
   ),
   tabPanel(
     "Gallery",
-    htmlTemplate("www/Design_Gallery.html")
+    htmlTemplate("www/gallery.html")
   ),
   tabPanel("algorithm ",
            fluidPage(
@@ -26,7 +26,7 @@ ui <- navbarPage(
   ),
   tabPanel(
     "Design",
-    htmlTemplate("www/customer_design.html")
+    htmlTemplate("www/design.html")
   ),
   tabPanel(
     "About Us",
