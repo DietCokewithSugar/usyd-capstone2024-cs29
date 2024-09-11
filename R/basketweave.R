@@ -139,10 +139,9 @@ basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_wi
 
       uhw <- tw*2 + ts
 
-      while (x_position <= max(wh, ww) + tw + th + ts || y_position >= -(tw + th + ts)) {
 
 
-        abline(v = 100, col = "blue", lwd = 2)  # 垂直线
+      abline(v = 100, col = "blue", lwd = 2)  # 垂直线
       abline(h = 100, col = "red", lwd = 2)   # 水平线
 
       draw_unit(base_x,base_y)
