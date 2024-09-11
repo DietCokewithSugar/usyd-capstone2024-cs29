@@ -101,7 +101,7 @@ basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_wi
         polygon(
           c(x, x + tw, x + tw, x),
           c(y, y, y + th, y + th),
-          col = "beige",
+          col = "lightblue",
           border = "black"
         )
       }
