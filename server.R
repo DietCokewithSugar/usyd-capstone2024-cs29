@@ -3,7 +3,7 @@ library(shiny)
 source("R/userInput.R")
 source("R/horizontalStack.R")
 source("R/herringbone.R")
-source("R/BasketWeave.R")
+source("R/basketweave.R")
 source("R/lattice.R")
 source("R/obstacles.R")
 
