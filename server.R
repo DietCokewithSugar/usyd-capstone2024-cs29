@@ -21,7 +21,7 @@ server <- function(input, output, session) {
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
       herringbone_ui("herringbone")
     } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-      horizontalStack_ui("basketweave")
+      basketweave_ui("basketweave")
     } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
       lattice_ui("lattice")
     } else {
@@ -53,8 +53,8 @@ server <- function(input, output, session) {
         obstacles = obstaclesServer_return_values
       )
     } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-      horizontalStack_server(
-        id = "BasketWeave",
+      basketweave_server(
+        id = "basketweave",
         wall_height = userInput_server_return_values$wall_height,
         wall_width = userInput_server_return_values$wall_width,
         tile_height = userInput_server_return_values$tile_height,
