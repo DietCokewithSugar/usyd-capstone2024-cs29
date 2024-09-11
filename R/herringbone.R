@@ -4,6 +4,23 @@ herringbone_ui <- function(id) {
     fluidPage(
       column(
         12,
+        sliderInput(
+          inputId = ns("bottom_slider"),
+          label = "",
+          value = 0,
+          min = -100,
+          max = 100,
+        ),
+        sliderInput(
+          inputId = ns("right_slider"),
+          label = "",
+          value = 0,
+          min = -100,
+          max = 100,
+        )
+      ),
+      column(
+        12,
         div(
           style = "display: flex; justify-content: center; align-items: center; height: 100%;",  # Center the content
           uiOutput(ns("dynamicWallPlot"))  # Dynamically generate plotOutput
@@ -41,36 +58,95 @@ herringbone_ui <- function(id) {
           "",
           icon = icon("arrow-right"),
           style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
-        )
+        ),
+
+      )
+    ),
+    fluidPage(
+      # tags$head(
+      #   tags$style(HTML("
+      #     #right_slider .jslider {
+      #       transform: rotate(270deg);
+      #       height: 200px;
+      #     }
+      #     #right_slider .jslider-pointer {
+      #       transform: translate(-10px, 0) !important;
+      #     }
+      #   "))
+      # ),
+      fluidRow(
+
       )
     )
   )
 }
 
-herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_width, tile_spacing, offset, obstacles) {
+herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile_spacing, tile_color, tile_two_color, obstacles, input_session) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Define ns inside the moduleServer function
-
     values <- reactiveValues(
       box_x = 0,
-      box_y = 0
+      box_y = 0,
+      offset_x = 0,
+      offset_y = 0
     )
 
+
+    observeEvent(input$right_slider, {
+      values$offset_y <- input$right_slider  # Move box vertically
+    })
+
     observeEvent(input$up, {
-      values$box_y <- values$box_y + 1  # Move box up
+      values$offset_y <- input$right_slider + 1  # Move box up
+      updateSliderInput(session, "right_slider", value = values$offset_y)
     })
 
     observeEvent(input$down, {
-      values$box_y <- values$box_y - 1  # Move box down
+      values$offset_y <- input$right_slider - 1  # Move box down
+      updateSliderInput(session, "right_slider", value = values$offset_y)
+    })
+
+    observeEvent(input$bottom_slider, {
+      values$offset_x <- input$bottom_slider  # Move box horizontally
     })
 
     observeEvent(input$left, {
-      values$box_x <- values$box_x - 1  # Move box left
+      values$offset_x <- input$bottom_slider - 1  # Move box left
+      updateSliderInput(session, "bottom_slider", value = values$offset_x)
     })
 
     observeEvent(input$right, {
-      values$box_x <- values$box_x + 1  # Move box right
+      values$offset_x <- input$bottom_slider + 1  # Move box right
+      updateSliderInput(session, "bottom_slider", value = values$offset_x)
     })
+
+
+
+    # 计算长宽比或根据输入的长/宽进行计算
+    observe({
+      req(herringbone_sv$input_type)
+      # 根据 tile_width 和 tile_ratio 计算 tile_height
+      if (herringbone_sv$input_type == "tile_width" && herringbone_sv$tile_ratio > 0) {
+        herringbone_sv$tile_height <- (herringbone_sv$tile_width - tile_spacing() * (herringbone_sv$tile_ratio - 1)) / herringbone_sv$tile_ratio
+        updateNumericInput(input_session, "tile_height_num", value = herringbone_sv$tile_height)
+        cat("tile_height = ",herringbone_sv$tile_height,"tile_width = ",herringbone_sv$tile_width,"tile_ratio = ",herringbone_sv$tile_ratio,"\n")
+
+        # 根据 tile_height 和 tile_ratio 计算 tile_width
+      } else if (herringbone_sv$input_type == "tile_height" && herringbone_sv$tile_ratio > 0) {
+        herringbone_sv$tile_width <- (herringbone_sv$tile_height + tile_spacing()) * herringbone_sv$tile_ratio - tile_spacing()
+        updateNumericInput(input_session, "tile_width_num", value = herringbone_sv$tile_width)
+        cat("tile_height = ",herringbone_sv$tile_height,"tile_width = ",herringbone_sv$tile_width,"tile_ratio = ",herringbone_sv$tile_ratio,"\n")
+
+        # 根据 tile_ratio 计算 tile_width，设置 tile_height 为 20
+      } else if (herringbone_sv$input_type == "tile_ratio") {
+        herringbone_sv$tile_height <- 20
+        herringbone_sv$tile_width <- (herringbone_sv$tile_height + tile_spacing()) * herringbone_sv$tile_ratio - tile_spacing()
+        updateNumericInput(input_session, "tile_height_num", value = herringbone_sv$tile_height)
+        updateNumericInput(input_session, "tile_width_num", value = herringbone_sv$tile_width)
+        cat("tile_height = ",herringbone_sv$tile_height,"tile_width = ",herringbone_sv$tile_width,"tile_ratio = ",herringbone_sv$tile_ratio,"\n")
+      }
+    })
+
 
     output$dynamicWallPlot <- renderUI({
       plotOutput(ns("wallPlot"), height = paste0(wall_height(), "px"), width = paste0(wall_width(), "px"))
@@ -79,10 +155,11 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
     output$wallPlot <- renderPlot({
       wh <- wall_height()
       ww <- wall_width()
-      th <- tile_height()  # Assume height is shorter dimension for horizontal tiles
-      tw <- tile_width()   # Assume width is longer dimension for horizontal tiles
+      th <- herringbone_sv$tile_height  # Assume height is shorter dimension for horizontal tiles
+      tw <- herringbone_sv$tile_width   # Assume width is longer dimension for horizontal tiles
       ts <- tile_spacing()
-      # off <- offset()
+      tc <- tile_color()
+      t2c <- tile_two_color()
 
       box_x <- values$box_x
       box_y <- values$box_y
@@ -90,12 +167,22 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
       plot.new()
       plot.window(xlim = c(0, ww), ylim = c(0, wh))
 
+
+      # use updateNumericInput update tile_height and tile_width in UI
+      updateSliderInput(session, ns("tile_height"), value = values$tile_height)
+      updateNumericInput(session, ns("tile_height_num"), value = values$tile_height)
+      updateSliderInput(session, ns("tile_width"), value = values$tile_width)
+      updateNumericInput(session, ns("tile_width_num"), value = values$tile_width)
+
+
+
+
       # base point on top left
       draw_horizontal_tile <- function(x, y) {
         polygon(
           c(x, x + tw, x + tw, x),
           c(y - th, y - th, y, y),
-          col = "beige",
+          col = tc,
           border = "black"
         )
       }
@@ -106,7 +193,7 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
 
           c(x, x + th, x + th, x),
           c(y - tw, y - tw, y, y),
-          col = "brown",
+          col = t2c,
           border = "black"
         )
       }
@@ -118,8 +205,8 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
       }
 
 
-      x_position <- -(tw + th + ts)
-      y_position <- wh + tw + th + ts
+      x_position <- -(tw + th + ts) + values$offset_x
+      y_position <- wh + tw + th + ts + values$offset_y
 
 
       # generate base line
