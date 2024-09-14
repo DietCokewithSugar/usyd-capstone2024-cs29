@@ -24,7 +24,7 @@ secondPage_ui <- function(id) {
           numericInput(ns("wall_width"), "Wall Width:", value = 500, min = 100, max = 1200, width = '100%'),
           numericInput(ns("wall_offset"), "Wall Offset:", value = 25, min = 0, max = 500, width = '100%'),
           numericInput(ns("wall_grout"), "Wall Grout:", value = 5, min = 0, max = 20, width = '100%'),
-          selectInput(ns("tile_size"), "Tile Size:", choices = c("Small", "Medium", "Large"), selected = "Medium", width = '100%'),
+          selectInput(ns("tile_size"), "Tile Size:", choices = c("30x30", "50x50", "70x70"), selected = "50x50", width = '100%'),
           
           div(
             style = "margin-top: 20px;",
