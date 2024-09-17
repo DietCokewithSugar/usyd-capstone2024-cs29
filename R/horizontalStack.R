@@ -59,6 +59,7 @@ horizontalStack_server <- function(id,
                                    tile_width,
                                    tile_spacing,
                                    offset,
+                                   tile_color,
                                    obstacles) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -66,29 +67,31 @@ horizontalStack_server <- function(id,
     values <- reactiveValues(
       box_x = 0,
       box_y = 0,
+      offset_x = 0,
+      offset_y = 0,
       full_tiles = 0,
       split_tiles = 0
     )
-    
+
     observeEvent(input$up, {
-      values$box_y <- values$box_y + 1  
+      values$offset_y <- values$offset_y - 1  # Move box up
     })
-    
+
     observeEvent(input$down, {
-      values$box_y <- values$box_y - 1  
+      values$offset_y <- values$offset_y + 1  # Move box down
     })
-    
+
     observeEvent(input$left, {
-      values$box_x <- values$box_x - 1  
+      values$offset_x <- values$offset_x + 1  # Move box left
     })
-    
+
     observeEvent(input$right, {
-      values$box_x <- values$box_x + 1  
+      values$offset_x <- values$offset_x - 1  # Move box right
     })
     
     observeEvent(input$reset, {
-      values$box_x <- 0
-      values$box_y <- 0
+      values$offset_x <- 0
+      values$offset_y <- 0
       values$full_tiles <- 0
       values$split_tiles <- 0
     })
@@ -108,7 +111,9 @@ horizontalStack_server <- function(id,
       tw <- tile_width()
       ts <- tile_spacing()
       off <- offset()
-      
+      tc <- tile_color()
+
+
       box_x <- values$box_x
       box_y <- values$box_y
       
@@ -119,7 +124,7 @@ horizontalStack_server <- function(id,
         polygon(
           c(x, x, x + tw, x + tw),
           c(y, y + th, y + th, y),
-          col = "lightblue",
+          col = tc,
           border = "black"
         )
       }
@@ -127,10 +132,10 @@ horizontalStack_server <- function(id,
       full_tiles <- 0
       split_tiles <- 0
       
-      y_position <- -th
+      y_position <- -th + values$offset_y
       row_counter <- 1
       while (y_position <= wh + 100) {
-        x_position <- ifelse(row_counter %% 2 == 0, -tw + off, -tw)
+        x_position <- ifelse(row_counter %% 2 == 0, -tw + off, -tw) + values$offset_x
         while (x_position <= ww + 100) {
           draw_tile(x_position, y_position)
           

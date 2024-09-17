@@ -9,7 +9,7 @@ source("R/obstacles.R")
 
 server <- function(input, output, session) {
   herringbone_sv <- reactiveValues(tile_width = 40, tile_height = 20, tile_ratio = 2, input_type = NULL)
-  userInput_server_return_values <- userInput_server("userInput")
+  userInput_server_return_values <- userInput_server("userInput", herringbone_sv)
   obstaclesServer_return_values <- obstaclesServer("obstacles", userInput = userInput_server_return_values)
 
   #dynamic page rendering starts
@@ -72,9 +72,11 @@ server <- function(input, output, session) {
         tile_width = userInput_server_return_values$tile_width,
         tile_spacing = userInput_server_return_values$tile_spacing,
         offset = userInput_server_return_values$offset,
+        tile_color = userInput_server_return_values$tile_color,
         obstacles = obstaclesServer_return_values
       )
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
+      cat("height: ",herringbone_sv$tile_height, "width: ",herringbone_sv$tile_width, "ratio: ",herringbone_sv$tile_ratio, "type: ",herringbone_sv$input_type, "\n")
       herringbone_server(
         id = "herringbone",
         wall_height = userInput_server_return_values$wall_height,
@@ -82,7 +84,7 @@ server <- function(input, output, session) {
         herringbone_sv = herringbone_sv,
         tile_spacing = userInput_server_return_values$tile_spacing,
         tile_color = userInput_server_return_values$tile_color,
-        tile_two_color = userInput_server_return_values$tile_two_color,
+        tile_color_2 = userInput_server_return_values$tile_color_2,
         obstacles = obstaclesServer_return_values,
         input_session = userInput_server_return_values$session
       )
@@ -94,7 +96,8 @@ server <- function(input, output, session) {
         tile_height = userInput_server_return_values$tile_height,
         tile_width = userInput_server_return_values$tile_width,
         tile_spacing = userInput_server_return_values$tile_spacing,
-        offset = userInput_server_return_values$offset,
+        tile_color = userInput_server_return_values$tile_color,
+        tile_color_2 = userInput_server_return_values$tile_color_2,
         obstacles = obstaclesServer_return_values
       )
     } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
@@ -102,10 +105,10 @@ server <- function(input, output, session) {
         id = "lattice",
         wall_height = userInput_server_return_values$wall_height,
         wall_width = userInput_server_return_values$wall_width,
-        tile_width = userInput_server_return_values$tile_width,
+        tile_height = userInput_server_return_values$tile_height,
         tile_spacing = userInput_server_return_values$tile_spacing,
         tile_color = userInput_server_return_values$tile_color,
-        tile_two_color = userInput_server_return_values$tile_two_color,
+        tile_color_2 = userInput_server_return_values$tile_color_2,
         obstacles = obstaclesServer_return_values
       )
     } else {

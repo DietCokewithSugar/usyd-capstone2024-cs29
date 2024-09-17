@@ -53,36 +53,36 @@ lattice_ui <- function(id) {
   )
 }
 
-lattice_server <- function(id, wall_height, wall_width,  tile_width, tile_spacing, tile_color, tile_two_color, obstacles) {
+lattice_server <- function(id, wall_height, wall_width, tile_height, tile_spacing, tile_color, tile_color_2, obstacles) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Define ns inside the moduleServer function
 
     values <- reactiveValues(
       box_x = 0,
-      box_y = 0
+      box_y = 0,
+      offset_x = 0,
+      offset_y = 0
     )
 
     observeEvent(input$up, {
-      values$box_y <- values$box_y + 1  # Move box up
+      values$offset_y <- values$offset_y - 1  # Move box up
     })
 
     observeEvent(input$down, {
-      values$box_y <- values$box_y - 1  # Move box down
+      values$offset_y <- values$offset_y + 1  # Move box down
     })
 
     observeEvent(input$left, {
-      values$box_x <- values$box_x - 1  # Move box left
+      values$offset_x <- values$offset_x + 1  # Move box left
     })
 
     observeEvent(input$right, {
-      values$box_x <- values$box_x + 1  # Move box right
+      values$offset_x <- values$offset_x - 1  # Move box right
     })
 
     observeEvent(input$reset, {
-      values$box_x <- 0  # Reset x position
-      values$box_y <- 0  # Reset y position
-
-      print("reset")
+      values$offset_x <- 0
+      values$offset_y <- 0
     })
 
 
@@ -94,10 +94,10 @@ lattice_server <- function(id, wall_height, wall_width,  tile_width, tile_spacin
 
       wh <- wall_height()
       ww <- wall_width()
-      tw <- tile_width()
+      th <- tile_height()
       ts <- tile_spacing()
       tc <- tile_color()
-      t2c <- tile_two_color()
+      tc2 <- tile_color_2()
 
       box_x <- values$box_x
       box_y <- values$box_y
@@ -108,17 +108,17 @@ lattice_server <- function(id, wall_height, wall_width,  tile_width, tile_spacin
 
       draw_intersection_tile <- function(x, y) {
         polygon(
-          c(x, x + tw*(sqrt(2)/2), x, x - tw*(sqrt(2)/2)),
-          c(y, y + tw*(sqrt(2)/2), y + tw*sqrt(2), y + tw*(sqrt(2)/2)),
-          col = t2c,
+          c(x, x + th*(sqrt(2)/2), x, x - th*(sqrt(2)/2)),
+          c(y, y + th*(sqrt(2)/2), y + th*sqrt(2), y + th*(sqrt(2)/2)),
+          col = tc2,
           border = "black"
         )
       }
 
       draw_right_bar_tile <- function(x, y) {
         polygon(
-          c(x, x + ts*(sqrt(2)/2), x + (ts-tw) * (sqrt(2)/2), x - tw*(sqrt(2)/2)),
-          c(y, y + ts*(sqrt(2)/2), y + (ts+tw) * (sqrt(2)/2), y + tw*(sqrt(2)/2)),
+          c(x, x + ts*(sqrt(2)/2), x + (ts-th) * (sqrt(2)/2), x - th*(sqrt(2)/2)),
+          c(y, y + ts*(sqrt(2)/2), y + (ts+th) * (sqrt(2)/2), y + th*(sqrt(2)/2)),
           col = tc,
           border = "black"
         )
@@ -126,8 +126,8 @@ lattice_server <- function(id, wall_height, wall_width,  tile_width, tile_spacin
 
       draw_left_bar_tile <- function(x, y) {
         polygon(
-          c(x, x + tw*(sqrt(2)/2), x + (tw-ts) * (sqrt(2)/2), x - ts*(sqrt(2)/2)),
-          c(y, y + tw*(sqrt(2)/2), y + (ts+tw) * (sqrt(2)/2), y + ts*(sqrt(2)/2)),
+          c(x, x + th*(sqrt(2)/2), x + (th-ts) * (sqrt(2)/2), x - ts*(sqrt(2)/2)),
+          c(y, y + th*(sqrt(2)/2), y + (ts+th) * (sqrt(2)/2), y + ts*(sqrt(2)/2)),
           col = tc,
           border = "black"
         )
@@ -145,9 +145,9 @@ lattice_server <- function(id, wall_height, wall_width,  tile_width, tile_spacin
       # base point on bottom
       draw_unit <- function(x, y) {
         draw_intersection_tile(x, y)
-        draw_right_bar_tile(x + tw*(sqrt(2)/2), y + tw*(sqrt(2)/2))
-        draw_left_bar_tile(x - tw*(sqrt(2)/2), y + tw*(sqrt(2)/2))
-        draw_gap_tile(x, y + tw*sqrt(2))
+        draw_right_bar_tile(x + th*(sqrt(2)/2), y + th*(sqrt(2)/2))
+        draw_left_bar_tile(x - th*(sqrt(2)/2), y + th*(sqrt(2)/2))
+        draw_gap_tile(x, y + th*sqrt(2))
       }
 
       # # draw a line
@@ -156,15 +156,15 @@ lattice_server <- function(id, wall_height, wall_width,  tile_width, tile_spacin
       # # draw a line
       # abline(h = 100, col = "blue", lwd = 2) # 在y=0处画一根横线，蓝色，线宽1
 
-      y_position <- -ts
+      y_position <- -(ts + th) + values$offset_y
       row_counter <- 1
-      while (y_position <= wh + 100) {
-        x_position <- ifelse(row_counter %% 2 == 0, -tw + (ts+tw)*(sqrt(2)/2), -tw)
-        while (x_position <= ww + 100) {
+      while (y_position <= wh + ts + th) {
+        x_position <- ifelse(row_counter %% 2 == 0, -th + (ts+th)*(sqrt(2)/2), -th)  + values$offset_x
+        while (x_position <= ww + ts + th) {
           draw_unit(x_position, y_position)
-          x_position <- x_position + (ts+tw)*sqrt(2)
+          x_position <- x_position + (ts+th)*sqrt(2)
         }
-        y_position <- y_position + (ts+tw)*(sqrt(2)/2)
+        y_position <- y_position + (ts+th)*(sqrt(2)/2)
         row_counter <- row_counter + 1
       }
 

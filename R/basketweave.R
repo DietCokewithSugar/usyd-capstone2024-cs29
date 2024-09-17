@@ -41,37 +41,52 @@ basketweave_ui <- function(id) {
           "",
           icon = icon("arrow-right"),
           style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
+        ),
+        actionButton(
+          ns("reset"),
+          "",
+          icon = icon("refresh"),
+          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
         )
       )
     )
   )
 }
 
-basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_width, tile_spacing, offset, obstacles) {
+basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_width, tile_spacing, tile_color, tile_color_2, obstacles) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Define ns inside the moduleServer function
     
     values <- reactiveValues(
       box_x = 0,
-      box_y = 0
+      box_y = 0,
+      offset_x = 0,
+      offset_y = 0
     )
-    
+
+
+
     observeEvent(input$up, {
-      values$box_y <- values$box_y + 1  # Move box up
+      values$offset_y <- values$offset_y - 1  # Move box up
     })
-    
+
     observeEvent(input$down, {
-      values$box_y <- values$box_y - 1  # Move box down
+      values$offset_y <- values$offset_y + 1  # Move box down
     })
-    
+
     observeEvent(input$left, {
-      values$box_x <- values$box_x - 1  # Move box left
+      values$offset_x <- values$offset_x + 1  # Move box left
     })
-    
+
     observeEvent(input$right, {
-      values$box_x <- values$box_x + 1  # Move box right
+      values$offset_x <- values$offset_x - 1  # Move box right
     })
-    
+
+    observeEvent(input$reset, {
+      values$offset_x <- 0
+      values$offset_y <- 0
+    })
+
     output$dynamicWallPlot <- renderUI({
       plotOutput(ns("wallPlot"), height = paste0(wall_height(), "px"), width = paste0(wall_width(), "px"))
     })
@@ -81,8 +96,9 @@ basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_wi
       ww <- wall_width()
       th <- tile_height()  # Assume height is shorter dimension for horizontal tiles
       ts <- tile_spacing()
-      off <- offset()
-      
+      tc <- tile_color()
+      tc2 <- tile_color_2()
+
       #尝试
       tw <- th*3 + ts*2
       
@@ -101,7 +117,7 @@ basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_wi
         polygon(
           c(x, x + tw, x + tw, x),
           c(y, y, y + th, y + th),
-          col = "lightblue",
+          col = tc,
           border = "black"
         )
       }
@@ -111,7 +127,7 @@ basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_wi
         polygon(
           c(x, x + th, x + th, x),
           c(y, y, y + tw, y + tw),
-          col = "beige",
+          col = tc2,
           border = "black"
         )
       }
@@ -140,9 +156,9 @@ basketweave_server <- function(id, wall_height, wall_width, tile_height, tile_wi
       uhw <- tw*2 + ts
 
 
-      y_position <- - uhw*2 - ts*2
+      y_position <- - uhw*2 - ts*2 + values$offset_y
       while (y_position <= wh + uhw*2 + ts*2) {
-        x_position <- - uhw*2 - ts*2
+        x_position <- - uhw*2 - ts*2 + values$offset_x
 
         while (x_position <= ww + uhw*2 + ts*2) {
           draw_unit(x_position, y_position)

@@ -4,23 +4,6 @@ herringbone_ui <- function(id) {
     fluidPage(
       column(
         12,
-        sliderInput(
-          inputId = ns("bottom_slider"),
-          label = "",
-          value = 0,
-          min = -100,
-          max = 100,
-        ),
-        sliderInput(
-          inputId = ns("right_slider"),
-          label = "",
-          value = 0,
-          min = -100,
-          max = 100,
-        )
-      ),
-      column(
-        12,
         div(
           style = "display: flex; justify-content: center; align-items: center; height: 100%;",  # Center the content
           uiOutput(ns("dynamicWallPlot"))  # Dynamically generate plotOutput
@@ -59,7 +42,12 @@ herringbone_ui <- function(id) {
           icon = icon("arrow-right"),
           style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
         ),
-
+        actionButton(
+          ns("reset"),
+          "",
+          icon = icon("refresh"),
+          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
+        )
       )
     ),
     fluidPage(
@@ -81,7 +69,7 @@ herringbone_ui <- function(id) {
   )
 }
 
-herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile_spacing, tile_color, tile_two_color, obstacles, input_session) {
+herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile_spacing, tile_color, tile_color_2, obstacles, input_session) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Define ns inside the moduleServer function
     values <- reactiveValues(
@@ -92,34 +80,27 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
     )
 
 
-    observeEvent(input$right_slider, {
-      values$offset_y <- input$right_slider  # Move box vertically
-    })
 
     observeEvent(input$up, {
-      values$offset_y <- input$right_slider + 1  # Move box up
-      updateSliderInput(session, "right_slider", value = values$offset_y)
+      values$offset_y <- values$offset_y - 1  # Move box up
     })
 
     observeEvent(input$down, {
-      values$offset_y <- input$right_slider - 1  # Move box down
-      updateSliderInput(session, "right_slider", value = values$offset_y)
-    })
-
-    observeEvent(input$bottom_slider, {
-      values$offset_x <- input$bottom_slider  # Move box horizontally
+      values$offset_y <- values$offset_y + 1  # Move box down
     })
 
     observeEvent(input$left, {
-      values$offset_x <- input$bottom_slider - 1  # Move box left
-      updateSliderInput(session, "bottom_slider", value = values$offset_x)
+      values$offset_x <- values$offset_x + 1  # Move box left
     })
 
     observeEvent(input$right, {
-      values$offset_x <- input$bottom_slider + 1  # Move box right
-      updateSliderInput(session, "bottom_slider", value = values$offset_x)
+      values$offset_x <- values$offset_x - 1  # Move box right
     })
 
+    observeEvent(input$reset, {
+      values$offset_x <- 0
+      values$offset_y <- 0
+    })
 
 
     # 计算长宽比或根据输入的长/宽进行计算
@@ -159,7 +140,7 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
       tw <- herringbone_sv$tile_width   # Assume width is longer dimension for horizontal tiles
       ts <- tile_spacing()
       tc <- tile_color()
-      t2c <- tile_two_color()
+      tc2 <- tile_color_2()
 
       box_x <- values$box_x
       box_y <- values$box_y
@@ -193,7 +174,7 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
 
           c(x, x + th, x + th, x),
           c(y - tw, y - tw, y, y),
-          col = t2c,
+          col = tc2,
           border = "black"
         )
       }
@@ -235,6 +216,8 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
         x_position <- x_position + th + ts
         y_position <- y_position - th - ts
       }
+
+
 
       polygon(
         c(
