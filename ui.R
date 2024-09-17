@@ -5,7 +5,7 @@ ui <- navbarPage(
   id = "navbar",
   "Tile app",
   tabPanel("Home", htmlTemplate("www/home.html")),
-  tabPanel("Gallery", htmlTemplate("www/Design_Gallery.html")),
+  tabPanel("Gallery", htmlTemplate("www/design_gallery.html")),
   tabPanel("Design", fluidPage(
     sidebarLayout(
       sidebarPanel(userInput_ui("userInput"), obstaclesUI("obstacles")),
