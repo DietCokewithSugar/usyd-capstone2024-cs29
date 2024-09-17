@@ -8,69 +8,365 @@
 <body>
 
     <!-- 设计画廊 -->
-    <div class="container gallery-container">
+    <div class="gallery_container">
         <h1 class="text-center">Design Gallery</h1>
         <p class="text-center">Explore our variety of tile designs. Click on an image to view more details.</p>
         
-        <div class="row">
+        <!-- 1 -->
+        <div class="gallery_row">
             <!-- 图片项1 -->
-            <div class="col-md-4 gallery-item">
-                <a href="design1.html">
-                    <img src="images/design1.jpg" alt="Design 1">
-                </a>
-                <div class="gallery-item-title">Modern Grey Tiles</div>
-                <div class="gallery-item-description">Elegant and sleek grey tiles for modern interiors.</div>
+            <div class="gallery_item" >
+                <img src="gallery/Basket_weave_1-1-3.jpg" onclick="showImage(this)" alt="Basket_weave_1-1-3">
+                <div class="gallery_title">Basket_weave_1-1-3</div>
+                <div class="gallery_description">A classic interlocking pattern with alternating horizontal and vertical rectangular tiles..</div>
+            </div>
+            <div id="imageModal" class="modal" onclick="closeModal()">
+                <span class="close">&times;</span>
+                <img class="modal-content" id="enlargedImage">
+                <div id="caption"></div>
             </div>
             
             <!-- 图片项2 -->
-            <div class="col-md-4 gallery-item">
-                <a href="design2.html">
-                    <img src="images/design2.jpg" alt="Design 2">
-                </a>
-                <div class="gallery-item-title">Classic White Tiles</div>
-                <div class="gallery-item-description">Timeless white tiles that fit any decor.</div>
+            <div class="gallery_item">
+                <img src="gallery/Basket_weave_1-4-6.jpg" onclick="showImage(this)" alt="Basket_weave_1-4-6">
+                <div class="gallery_title">Basket_weave_1-4-6</div>
+                <div class="gallery_description">An intricate pattern with a combination of small and large rectangular tiles woven together to create a textured, basket-like effect.</div>
             </div>
 
             <!-- 图片项3 -->
-            <div class="col-md-4 gallery-item">
-                <a href="design3.html">
-                    <img src="images/design3.jpg" alt="Design 3">
-                </a>
-                <div class="gallery-item-title">Rustic Brown Tiles</div>
-                <div class="gallery-item-description">Warm and inviting brown tiles with a rustic touch.</div>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- 图片项4 -->
-            <div class="col-md-4 gallery-item">
-                <a href="design4.html">
-                    <img src="images/design4.jpg" alt="Design 4">
-                </a>
-                <div class="gallery-item-title">Geometric Pattern Tiles</div>
-                <div class="gallery-item-description">Bold geometric patterns for a contemporary look.</div>
+            <div class="gallery_item">
+                <img src="gallery/Basket_weave_double_45_1-1-4.jpg" onclick="showImage(this)" alt="Basket_weave_double_45_1-1-4">
+                <div class="gallery_title">Basket_weave_double_45_1-1-4</div>
+                <div class="gallery_description">A diagonal weave pattern with pairs of rectangular tiles set at a 45-degree angle, creating a dynamic, crisscrossed effect.</div>              
             </div>
             
-            <!-- 图片项5 -->
-            <div class="col-md-4 gallery-item">
-                <a href="design5.html">
-                    <img src="images/design5.jpg" alt="Design 5">
-                </a>
-                <div class="gallery-item-title">Vintage Blue Tiles</div>
-                <div class="gallery-item-description">Charming blue tiles with a vintage appeal.</div>
+                        <!-- 图片项4 -->
+            <div class="gallery_item">
+                <img src="gallery/Basket_weave_double_90_1-1-4.jpg" onclick="showImage(this)" alt="Basket_weave_double_90_1-1-4">
+                <div class="gallery_title">Basket_weave_double_90_1-1-4</div>
+                <div class="gallery_description">A pattern with pairs of horizontal and vertical rectangular tiles arranged in a woven design at a 90-degree angle.</div>               
             </div>
 
-            <!-- 图片项6 -->
-            <div class="col-md-4 gallery-item">
-                <a href="design6.html">
-                    <img src="images/design6.jpg" alt="Design 6">
-                </a>
-                <div class="gallery-item-title">Minimalist Black Tiles</div>
-                <div class="gallery-item-description">Sleek and minimal black tiles for modern spaces.</div>
-            </div>
+
         </div>
+        
+        
+        <!-- 2 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Chevron30.jpg"  onclick="showImage(this)" alt="gallery/Chevron30">
+                <div class="gallery_title">Chevron30</div>
+                <div class="gallery_description">A modern and elegant pattern featuring sleek grey tiles arranged in a distinctive chevron design.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Corner_dots_double.jpg"  onclick="showImage(this)" alt="Corner_dots_double">
+                <div class="gallery_title">Corner_dots_double</div>
+                <div class="gallery_description">A contemporary pattern with sleek grey tiles featuring a unique double corner dot design.</div>
+            </div>
 
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Corner_dots.jpg"  onclick="showImage(this)" alt="Corner_dots">
+                <div class="gallery_title">Corner_dots</div>
+                <div class="gallery_description">A stylish pattern showcasing sleek grey tiles with distinctive corner dot accents for a modern look.</div>           
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Diamond_checkerboard.jpg"  onclick="showImage(this)" alt="Diamond_checkerboard">
+                <div class="gallery_title">Diamond_checkerboard</div>
+                <div class="gallery_description">A modern pattern featuring sleek grey tiles arranged in a striking diamond checkerboard design.</div>            
+            </div>
+
+
+        </div>
+        
+        <!-- 3 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Diamond_checkered.jpg"  onclick="showImage(this)" alt="Diamond_checkered">
+                <div class="gallery_title">Diamond_checkered</div>
+                <div class="gallery_description">A sophisticated pattern with sleek grey tiles arranged in a classic diamond checkered layout.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Diamond_grid_pattern.jpg"  onclick="showImage(this)" alt="Diamond_grid_pattern">
+                <div class="gallery_title">Diamond_grid_pattern</div>
+                <div class="gallery_description">A contemporary design featuring sleek grey tiles arranged in a refined diamond grid pattern.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Grid.jpg"  onclick="showImage(this)" alt="Grid">
+                <div class="gallery_title">Grid</div>
+                <div class="gallery_description">A modern pattern showcasing sleek grey tiles arranged in a clean and structured grid layout.</div>               
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Herringbone_blocks.jpg"  onclick="showImage(this)" alt="Herringbone_blocks">
+                <div class="gallery_title">Herringbone_blocks</div>
+                <div class="gallery_description">A contemporary pattern with sleek grey tiles arranged in a classic herringbone block design.</div>              
+            </div>
+
+
+        </div>
+        
+        <!-- 4 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Herringbone_duet.jpg" onclick="showImage(this)" alt="Herringbone_duet">
+                <div class="gallery_title">Herringbone_duet</div>
+                <div class="gallery_description">A modern design featuring sleek grey tile arranged in a double herringbone pattern for sophisticate look.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Herringbone_shadow.jpg" onclick="showImage(this)" alt="Herringbone_shadow">
+                <div class="gallery_title">Herringbone_shadow</div>
+                <div class="gallery_description">A stylish pattern featuring sleek grey tiles arranged in a herringbone design with shadow effects for a modern look.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Herringbone_single.jpg" onclick="showImage(this)" alt="Herringbone_single">
+                <div class="gallery_title">Herringbone_single</div>
+                <div class="gallery_description">A classic pattern with sleek grey tiles arranged in a single herringbone design for a modern aesthetic.</div>              
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Horizontal.jpg" onclick="showImage(this)" alt="Horizontal">
+                <div class="gallery_title">Horizontal</div>
+                <div class="gallery_description">A contemporary design featuring sleek grey tiles arranged in a clean horizontal layout for a modern touch.</div>             
+            </div>
+
+
+        </div>
+        
+        
+        <!-- 5 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Hound_tooth.jpg" onclick="showImage(this)" alt="Hound_tooth" >
+                <div class="gallery_title">Hound_tooth</div>
+                <div class="gallery_description">A chic pattern featuring sleek grey tiles arranged in a distinctive houndstooth design for a modern style.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Lattice_block.jpg" onclick="showImage(this)" alt="Lattice_block" >
+                <div class="gallery_title">Lattice_block</div>
+                <div class="gallery_description">A modern pattern featuring sleek grey tiles arranged in a sophisticated lattice block design.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Lattice_block2.jpg" onclick="showImage(this)" alt="Lattice_block2" >
+                <div class="gallery_title">Lattice_block2</div>
+                <div class="gallery_description">A refined pattern with sleek grey tiles arranged in a contemporary lattice block layout for a modern look.</div>             
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Lattice_grid.jpg"  onclick="showImage(this)" alt="Lattice_grid">
+                <div class="gallery_title">Lattice_grid</div>
+                <div class="gallery_description">A modern pattern featuring sleek grey tiles arranged in a stylish lattice grid design.</div>              
+            </div>
+
+
+        </div>
+        
+        <!-- 6 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Marseilles.jpg" onclick="showImage(this)" alt="Marseilles">
+                <div class="gallery_title">Marseilles</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Narrow_frame.jpg" onclick="showImage(this)" alt="Narrow_frame">
+                <div class="gallery_title">Narrow_frame</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Picture_frame.jpg" onclick="showImage(this)" alt="Picture_frame">
+                <div class="gallery_title">Picture_frame</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>             
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Pincheck.jpg" onclick="showImage(this)" alt="Pincheck">
+                <div class="gallery_title">Pincheck</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>              
+            </div>
+
+
+        </div>
+        
+        
+        <!-- 7 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Pinwheel_large.jpg" onclick="showImage(this)" alt="Pinwheel_large">
+                <div class="gallery_title">Pinwheel_large</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Pinwheel_rectangular.jpg" onclick="showImage(this)" alt="Pinwheel_rectangular">
+                <div class="gallery_title">Pinwheel_rectangular</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Soldiered.jpg" onclick="showImage(this)" alt="Soldiered">
+                <div class="gallery_title">Soldiered</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>             
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Stairstep.jpg" onclick="showImage(this)" alt="Stairstep">
+                <div class="gallery_title">Stairstep</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>              
+            </div>
+
+
+        </div>
+        
+        <!-- 8 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Tessell.jpg"  onclick="showImage(this)" alt="Stairstep">
+                <div class="gallery_title">Tessell</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Trellis_block.jpg"  onclick="showImage(this)" alt="Trellis_block">
+                <div class="gallery_title">Trellis_block</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Trellis.jpg"  onclick="showImage(this)" alt="Trellis">
+                <div class="gallery_title">Trellis</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>             
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Versailles_modified.jpg"  onclick="showImage(this)" alt="Versailles_modified">
+                <div class="gallery_title">Versailles_modified</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>              
+            </div>
+
+
+        </div>
+        
+                <!-- 9 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Versailles.jpg" onclick="showImage(this)" alt="Versailles">
+                <div class="gallery_title">Versailles</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Weave modular.jpg" onclick="showImage(this)" alt="Weave modular">
+                <div class="gallery_title">Weave modular</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Weave_block.jpg" onclick="showImage(this)" alt="Weave_block">
+                <div class="gallery_title">Weave_block</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>             
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Weave_double.jpg" onclick="showImage(this)" alt="Weave_double">
+                <div class="gallery_title">Weave_double</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>              
+            </div>
+
+
+        </div>
+        
+                        <!-- 9 -->
+        <div class="gallery_row">
+            <!-- 图片项1 -->
+            <div class="gallery_item">
+                <img src="gallery/Weave_plain1.jpg" onclick="showImage(this)" alt="Weave_plain1">
+                <div class="gallery_title">Weave_plain1</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+            
+            <!-- 图片项2 -->
+            <div class="gallery_item">
+                <img src="gallery/Weave_plain2.jpg" onclick="showImage(this)" alt="Weave_plain2">
+                <div class="gallery_title">Weave_plain2</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>
+            </div>
+
+            <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Weave_ZigZag.jpg" onclick="showImage(this)" alt="Weave_ZigZag">
+                <div class="gallery_title">Weave_ZigZag</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>             
+            </div>
+            
+                        <!-- 图片项3 -->
+            <div class="gallery_item">
+                <img src="gallery/Windmill.jpg" onclick="showImage(this)" alt="Windmill">
+                <div class="gallery_title">Windmill</div>
+                <div class="gallery_description">Elegant and sleek grey tiles for modern.</div>              
+            </div>
+
+
+        </div>
+        
     </div>
 
 </body>
+<script>
+  function showImage(img) {
+    var modal = document.getElementById("imageModal");
+    var modalImg = document.getElementById("enlargedImage");
+    var captionText = document.getElementById("caption");
+
+    modal.style.display = "block";
+    modalImg.src = img.src; // Assuming the enlarged image has the same src
+    captionText.innerHTML = img.alt; // Set the caption based on the alt text
+}
+
+function closeModal() {
+    var modal = document.getElementById("imageModal");
+    modal.style.display = "none";
+}
+</script>
 </html>

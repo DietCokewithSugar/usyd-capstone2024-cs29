@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <div class="container help-container">
+    <div class="help_container"  >
         <!-- 帮助页面标题 -->
         <section class="help-info">
             <h1 class="text-center">Help & Support</h1>
@@ -19,89 +19,93 @@
         <section class="faq">
             <h2 class="text-center">Frequently Asked Questions (FAQ)</h2>
             <div class="accordion" id="faqAccordion">
-                <!-- FAQ 项1 -->
+                <!-- FAQ 项0 -->
                 <div class="card">
-                    <div class="card-header" id="faqHeading1">
+                    <div class="card-header" id="faqHeading2">
                         <h5 class="mb-0">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
-                                How do I create a custom tile design?
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse1" aria-expanded="false" aria-controls="faqCollapse2">
+                                What can I do with this software?
                             </button>
                         </h5>
                     </div>
-
-                    <div id="faqCollapse1" class="collapse show" aria-labelledby="faqHeading1" data-parent="#faqAccordion">
+                    <div id="faqCollapse1" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
                         <div class="card-body">
-                            To create a custom tile design, go to the "Custom Design" tab and use our intuitive design tools to select patterns, colors, and sizes. You can save your design and order it directly from the app.
+                            Using this software, you can view various tile patterns; you can simulate your wall with different patterns and different numbers of tiles; you can see the approximate result and the amount of money you might need to spend in just a few minutes.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 项1 -->
+                <div class="card">
+                    <div class="card-header" id="faqHeading3">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
+                                How can I view all tile pattern styles?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="faqCollapse2" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
+                        <div class="card-body">
+                            Find "Gallary" in the navigation bar above and click on it to enter the Gallery module. Here, you can find pictures of various tile patterns. Click on the picture to enlarge it for viewing.
                         </div>
                     </div>
                 </div>
 
                 <!-- FAQ 项2 -->
                 <div class="card">
-                    <div class="card-header" id="faqHeading2">
+                    <div class="card-header" id="faqHeading4">
                         <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
-                                Can I change my order after it's been placed?
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
+                                How to generate pattern layout?
                             </button>
                         </h5>
                     </div>
-                    <div id="faqCollapse2" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
+                    <div id="faqCollapse3" class="collapse" aria-labelledby="faqHeading3" data-parent="#faqAccordion">
                         <div class="card-body">
-                            Once your order has been placed, you can make changes to it by contacting our customer support team within 24 hours. After this period, changes may not be possible depending on the production stage.
+                            Click "Design" in the navigation bar above to enter the design module, select the pattern you want to apply to the layout, as well as the length and height of the wall, the length and height of the tile, the spacing between tiles, and the offset of the tile.
                         </div>
                     </div>
                 </div>
 
                 <!-- FAQ 项3 -->
                 <div class="card">
-                    <div class="card-header" id="faqHeading3">
+                    <div class="card-header" id="faqHeading5">
                         <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
-                                What are the available payment options?
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
+                                How do I know the cost of my design layout?
                             </button>
                         </h5>
                     </div>
-                    <div id="faqCollapse3" class="collapse" aria-labelledby="faqHeading3" data-parent="#faqAccordion">
+                    <div id="faqCollapse4" class="collapse" aria-labelledby="faqHeading4" data-parent="#faqAccordion">
                         <div class="card-body">
-                            We accept a variety of payment options including credit/debit cards, PayPal, and bank transfers. All transactions are secure and encrypted to protect your information.
+                            When all parameters are set, the cost will be automatically displayed.
                         </div>
                     </div>
                 </div>
 
                 <!-- FAQ 项4 -->
                 <div class="card">
-                    <div class="card-header" id="faqHeading4">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
-                                How do I track my order?
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="faqCollapse4" class="collapse" aria-labelledby="faqHeading4" data-parent="#faqAccordion">
-                        <div class="card-body">
-                            After placing your order, you will receive a tracking number via email. You can use this number to track your order's progress on our website or through the shipping carrier's site.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ 项5 -->
-                <div class="card">
-                    <div class="card-header" id="faqHeading5">
+                    <div class="card-header" id="faqHeading6">
                         <h5 class="mb-0">
                             <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5">
-                                How do I contact customer support?
+                                Can I save and view my previous design layout history?
                             </button>
                         </h5>
                     </div>
                     <div id="faqCollapse5" class="collapse" aria-labelledby="faqHeading5" data-parent="#faqAccordion">
                         <div class="card-body">
-                            You can contact our customer support team via email at support@tileapp.com or by calling +1 (800) 555-1234. Our support team is available Monday to Friday, 9 AM to 5 PM.
+                            Yes, all tile layouts and related parameter information you click to save will be uploaded to the database and can be queried.
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        
+        <div class = "help-container">
+            <img src="help1.jpg" class = "helppic" >
+        </div>
     </div>
+
 
 
 </body>
