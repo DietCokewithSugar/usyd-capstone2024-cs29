@@ -54,53 +54,82 @@
 
     <!-- 产品背景 -->
     <div class="container-customer">
-        <h2>Background</h2>
+        <h2 class="title">Background</h2>
         <div class="well">
-            <p>Our tile app is designed to provide the best user experience in customizing and designing tiles. Our main objective is to meet the needs of designers and homeowners alike.</p>
+             <p class="lead">RenoPilot is developing cloud-based interactive products for the global property improvement and home renovation industry, valued at approximately $1 trillion annually. Once fully developed, the RenoPilot platform will enable homeowners to design and estimate costs for about 30 different project types and approximately 75 sub-types. We estimate that around 5% of all existing dwellings in Australia have new flooring installed each year (carpet, wood, laminate, tiles, etc.). Homeowners lack independent sources of design and cost estimation to help them get what they want at an acceptable price. The Tiling App will allow homeowners to select the best patterns and layouts for tiles (and other materials) not just for walls and floors but also for other materials like wood and laminate flooring and other surfaces such as brick or block walls and outdoor paving. We expect the Tiling App to become the most widely used application on the RenoPilot platform.</p>
         </div>
-    </div>
 
+      
+    </div>
     <!-- 功能介绍 -->
     <div class="container-customer">
-        <h2>Features</h2>
+        <h2 class="title">Features</h2>
         <div class="row">
             <div class="col-md-4">
                 <div class="well">
                     <i class="fa fa-check-circle"></i>
-                    <h4>Easy Customization</h4>
-                    <p>Easily customize your tiles with our intuitive tools.</p>
+                    <p class="led">Easy Customization</p>
+                    <p class="lead">Tailor your tiles with our user-friendly design tools. Customize patterns, colors, finishes, and even the dimensions like wall and tile width and height. Select the exact parameters you need to create a unique layout that perfectly fits your space. Unleash your creativity and design a personalized tiling solution that reflects your style! Enjoy the freedom to customize your design.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="well">
                     <i class="fa fa-palette"></i>
-                    <h4>Variety of Designs</h4>
-                    <p>Access a wide range of designs suitable for any space.</p>
+                    <p class="led">Infinite Designs</p>
+                    <p class="lead">Dive into a vast array of tile designs, from classic to contemporary. With unlimited layout generation, you can freely experiment with different designs. Each time you create a layout, we swiftly generate a visual representation of the floor plan and calculate the associated costs for you. Whether you're revamping a room or starting from scratch, find the perfect option for every setting and budget.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="well">
                     <i class="fa fa-shopping-cart"></i>
-                    <h4>Easy Ordering</h4>
-                    <p>Order your custom tiles directly from the app.</p>
+                    <p class="led">Review Anytime</p>
+                    <p class="lead">Enjoy the flexibility of reviewing and ordering your custom tiles anytime, anywhere. Save your favorite layouts in our database for easy access and review at any time. Your designs are securely stored and can be retrieved whenever you wish to revisit past projects. Our app ensures that your project moves forward, no matter where you are, giving you control over your creative process.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 产品作用 -->
     <div class="container-customer">
-        <h2>How it Works</h2>
-        <p>Our app helps you visualize, customize, and order tiles for your space. Whether you are an architect, interior designer, or homeowner, our tool simplifies the process.</p>
+        <h2 class="title">Objectives</h2>
+        <p class="lead">Our main objectives at RenoPilot are to simplify the home renovation process, empower homeowners with DIY tools, and provide cost-effective solutions. We aim to revolutionize how renovations are planned and executed, making it easier, faster, and more affordable for everyone.</p>
     </div>
 
     <!-- Learn More 链接 -->
     <div class="container-customer">
-        <h2>Learn More</h2>
-        <p>For more details, visit our <a href="https://example.com">official website</a>.</p>
+        <h2 class="title">Learn More</h2>
+        <p class="lead">For more details, visit our official website.</p>
     </div>
 
 </body>
 
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log("JavaScript is running");
+    var index = 0;
+    var radios = document.querySelectorAll('input[type="radio"][name="r"]');
+    var maxIndex = radios.length - 1;
 
+    function autoSlide() {
+        console.log("Changing slide to index:", index);
+        radios[index].checked = true;
+        index++;
+        if (index > maxIndex) {
+            index = 0; // Reset index to loop the slideshow
+        }
+    }
+
+    var interval = setInterval(autoSlide, 5000); // Set interval to 5 seconds
+
+    // Optional: Clear interval on mouse enter and restart on mouse leave
+    var slideshowContainer = document.querySelector('.slideshow');
+    slideshowContainer.addEventListener('mouseenter', function() {
+        clearInterval(interval);
+    });
+    slideshowContainer.addEventListener('mouseleave', function() {
+        interval = setInterval(autoSlide, 5000);
+    });
+  });
+  
+</script>
 </html>
