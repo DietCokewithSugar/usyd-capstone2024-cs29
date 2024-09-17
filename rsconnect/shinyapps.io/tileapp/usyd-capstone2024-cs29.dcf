@@ -1,0 +1,12 @@
+name: usyd-capstone2024-cs29
+title: usyd-capstone2024-cs29
+username: tileapp
+account: tileapp
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12533355
+bundleId: 9083859
+url: https://tileapp.shinyapps.io/usyd-capstone2024-cs29/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

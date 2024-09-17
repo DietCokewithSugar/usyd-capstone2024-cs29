@@ -3,12 +3,13 @@ library(shiny)
 source("R/userInput.R")
 source("R/horizontalStack.R")
 source("R/herringbone.R")
-source("R/BasketWeave.R")
+source("R/basketweave.R")
+source("R/lattice.R")
 source("R/obstacles.R")
 
 server <- function(input, output, session) {
-  
-  userInput_server_return_values <- userInput_server("userInput")
+  herringbone_sv <- reactiveValues(tile_width = 40, tile_height = 20, tile_ratio = 2, input_type = NULL)
+  userInput_server_return_values <- userInput_server("userInput",herringbone_sv)
   obstaclesServer_return_values <- obstaclesServer("obstacles", userInput = userInput_server_return_values)
 
   output$dynamicUI <- renderUI({
@@ -18,7 +19,7 @@ server <- function(input, output, session) {
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
       herringbone_ui("herringbone")
     } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-      horizontalStack_ui("basketweave")
+      basketweave_ui("basketweave")
     } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
       lattice_ui("lattice")
     } else {
@@ -43,21 +44,33 @@ server <- function(input, output, session) {
         id = "herringbone",
         wall_height = userInput_server_return_values$wall_height,
         wall_width = userInput_server_return_values$wall_width,
-        tile_height = userInput_server_return_values$tile_height,
-        tile_width = userInput_server_return_values$tile_width,
+        herringbone_sv = herringbone_sv,
         tile_spacing = userInput_server_return_values$tile_spacing,
-        offset = userInput_server_return_values$offset,
-        obstacles = obstaclesServer_return_values
+        tile_color = userInput_server_return_values$tile_color,
+        tile_two_color = userInput_server_return_values$tile_two_color,
+        obstacles = obstaclesServer_return_values,
+        input_session = userInput_server_return_values$session
       )
     } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-      horizontalStack_server(
-        id = "BasketWeave",
+      basketweave_server(
+        id = "basketweave",
         wall_height = userInput_server_return_values$wall_height,
         wall_width = userInput_server_return_values$wall_width,
         tile_height = userInput_server_return_values$tile_height,
         tile_width = userInput_server_return_values$tile_width,
         tile_spacing = userInput_server_return_values$tile_spacing,
         offset = userInput_server_return_values$offset,
+        obstacles = obstaclesServer_return_values
+      )
+    } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
+      lattice_server(
+        id = "lattice",
+        wall_height = userInput_server_return_values$wall_height,
+        wall_width = userInput_server_return_values$wall_width,
+        tile_width = userInput_server_return_values$tile_width,
+        tile_spacing = userInput_server_return_values$tile_spacing,
+        tile_color = userInput_server_return_values$tile_color,
+        tile_two_color = userInput_server_return_values$tile_two_color,
         obstacles = obstaclesServer_return_values
       )
     } else {
