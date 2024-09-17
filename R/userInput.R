@@ -1,13 +1,9 @@
-library(colourpicker)
-library(later)
-
-
 source("R/obstacles.R")
 source("R/validation.R")
 
 userInput_ui <- function(id) {
   ns <- NS(id)
-
+  
   tagList(
     fluidRow(
       column(
@@ -138,9 +134,8 @@ userInput_ui <- function(id) {
 }
 
 
-
 userInput_server <- function(id) {
-
+  
   moduleServer(id, function(input, output, session) {
     
     observeEvent(input$wall_height_num, {
@@ -259,62 +254,7 @@ userInput_server <- function(id) {
     pattern_dropdown <- reactive({
       input$pattern_dropdown
     })
-
-    updating <- reactiveValues(flag = TRUE)
-
-    observe({
-
-      if(input$pattern_dropdown == "Herringbone") {
-        # cat(herringbone_sv$tile_height,"input\n")
-        observeEvent(input$tile_height, {
-          if(updating$flag){
-            updating$flag <- FALSE
-            cat("change tile_height \n")
-            herringbone_sv$tile_height <- input$tile_height
-            herringbone_sv$input_type <- "tile_height"
-            later(function() {
-              updating$flag <- TRUE
-            }, 0.5)
-          }
-        })
-
-        observeEvent(input$tile_width, {
-          if(updating$flag){
-            updating$flag <- FALSE
-            cat("change tile_width \n")
-            herringbone_sv$tile_width <- input$tile_width
-            herringbone_sv$input_type <- "tile_width"
-            later(function() {
-              updating$flag <- TRUE
-            }, 0.5)
-          }
-        })
-
-        observeEvent(input$tile_ratio, {
-          if(updating$flag){
-            updating$flag <- FALSE
-            cat("change tile_ratio \n")
-            herringbone_sv$tile_ratio <- input$tile_ratio
-            herringbone_sv$input_type <- "tile_ratio"
-            later(function() {
-              updating$flag <- TRUE
-            }, 0.5)
-          }
-        })
-
-        observeEvent(input$tile_spacing, {
-          if(updating$flag){
-            updating$flag <- FALSE
-            cat("change tile_spacing \n")
-            later(function() {
-              updating$flag <- TRUE
-            }, 0.5)
-          }
-        })
-      }
-    })
-
-
+    
     return(
       list(
         wall_height = wall_height,
@@ -323,13 +263,9 @@ userInput_server <- function(id) {
         tile_width = tile_width,
         tile_spacing = tile_spacing,
         offset = offset,
-        tile_ratio = tile_ratio,
-        tile_color = tile_color,
-        tile_two_color = tile_two_color,
-        pattern_dropdown = pattern_dropdown,
-        session = session
+        pattern_dropdown = pattern_dropdown
       )
     )
   })
-
+  
 }
