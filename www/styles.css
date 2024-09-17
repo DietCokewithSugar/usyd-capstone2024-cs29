@@ -321,6 +321,29 @@ input[name="r"] {
 
 
 /* week7 */
+/* week8 */
+.lead:first-letter {
+    font-size: 150%;   /* 设置字体大小为正常大小的3倍 */
+}
+.lead {
+    font-family: 'Times New Roman', serif;
+}
+.led{
+    font-size: 200%;
+    font-family: 'Times New Roman', serif;
+
+}
+.title::before {
+    content: "";  /* 这是必需的，用于生成伪元素 */
+    display: block;  /* 让伪元素表现为块级元素 */
+    width: 10%;  /* 设置宽度为50% */
+    height: 3px;  /* 设置高度为2px */
+    background-color: #334455;
+}
+
+
+
+/* week8 */
 #r1:checked ~ .s1 {
     margin-left: 0;
 }
