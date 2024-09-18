@@ -46,19 +46,34 @@ landingPage_ui <- function(id) {
 
 landingPage_server <- function(id, switch_ui) {
   moduleServer(id, function(input, output, session) {
-    
+
+    current_page <- reactiveVal("landingPage")
+    button_pressed <- reactiveVal(FALSE)
     observeEvent(input$reset, {
       # Reset the layout dropdown to its default value
       updateSelectInput(session, "layout_option", selected = "Stack")
     })
-    
+
+    # observeEvent(input$next_button, {
+    #   # Pass the selected layout option to the second page
+    #   selected_values <- list(
+    #     layout_option = input$layout_option
+    #   )
+    #   switch_ui("secondPage", selected_values)
+    # })
+
     observeEvent(input$next_button, {
-      # Pass the selected layout option to the second page
-      selected_values <- list(
-        layout_option = input$layout_option
-      )
-      switch_ui("secondPage", selected_values)
+      if (!button_pressed()) {
+        # Set the flag to TRUE to mark that the button was clicked manually
+        button_pressed(TRUE)
+
+        # Pass the selected layout option to the second page
+        selected_values <- list(
+          layout_option = input$layout_option
+        )
+        switch_ui("secondPage", selected_values)
+      }
     })
-    
+
   })
 }

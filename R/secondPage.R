@@ -42,10 +42,11 @@ secondPage_ui <- function(id) {
   )
 }
 
+
 secondPage_server <- function(id, selected_values, switch_ui) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
+    print("second")
     output$selected_layout_option <- renderText({ selected_values$layout_option })
 
     obstacles <- obstaclesServer("obstacles_module", list(
@@ -65,6 +66,13 @@ secondPage_server <- function(id, selected_values, switch_ui) {
       )
 
       switch_ui("finalPage", final_values)
+    })
+
+    observeEvent(input$back, {
+      # Ensure it only triggers once by invalidating the session or using a condition
+      isolate({
+        switch_ui("landingPage", NULL)
+      })
     })
   })
 }
