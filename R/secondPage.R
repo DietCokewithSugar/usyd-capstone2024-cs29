@@ -24,7 +24,7 @@ secondPage_ui <- function(id) {
           numericInput(ns("wall_width"), "Wall Width:", value = 500, min = 100, max = 1200, width = '100%'),
           numericInput(ns("wall_offset"), "Wall Offset:", value = 25, min = 0, max = 500, width = '100%'),
           numericInput(ns("wall_grout"), "Wall Grout:", value = 5, min = 0, max = 20, width = '100%'),
-          selectInput(ns("tile_size"), "Tile Size:", choices = c("Small", "Medium", "Large"), selected = "Medium", width = '100%'),
+          selectInput(ns("tile_size"), "Tile Size:", choices = c("30x30", "50x50", "70x70"), selected = "50x50", width = '100%'),
           
           div(
             style = "margin-top: 20px;",
@@ -42,10 +42,11 @@ secondPage_ui <- function(id) {
   )
 }
 
+
 secondPage_server <- function(id, selected_values, switch_ui) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
+    print("second")
     output$selected_layout_option <- renderText({ selected_values$layout_option })
 
     obstacles <- obstaclesServer("obstacles_module", list(
@@ -65,6 +66,13 @@ secondPage_server <- function(id, selected_values, switch_ui) {
       )
 
       switch_ui("finalPage", final_values)
+    })
+
+    observeEvent(input$back, {
+      # Ensure it only triggers once by invalidating the session or using a condition
+      isolate({
+        switch_ui("landingPage", NULL)
+      })
     })
   })
 }
