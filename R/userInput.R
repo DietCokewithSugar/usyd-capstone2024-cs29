@@ -1,3 +1,6 @@
+library(colourpicker)
+library(later)
+
 source("R/obstacles.R")
 source("R/validation.R")
 
@@ -101,13 +104,32 @@ userInput_ui <- function(id) {
               "Tile Spacing:",
               value = 5,
               min = 0,
-              max = 20,
+              max = 100,
               width = '100%'
             )
         ),
         div(
           style = "color: red; font-weight: bold;",
           textOutput(ns("numeric_error_tile_spacing"))
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(style = "position: relative;",
+            numericInput(
+              ns("tile_ratio_num"),
+              "Tile Ratio:",
+              value = 2,
+              min = 2,
+              max = 20,
+              width = '100%'
+            )
+        ),
+        div(
+          style = "color: red; font-weight: bold;",
+          textOutput(ns("numeric_error_tile_ratio"))
         )
       )
     ),
@@ -129,13 +151,37 @@ userInput_ui <- function(id) {
           textOutput(ns("numeric_error_offset"))
         )
       )
-    )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(style = "position: relative;",
+            colourInput(
+              ns("tile_color"),
+              "Choose tile color:",
+              value = "#ADD8E6"
+            )
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(style = "position: relative;",
+            colourInput(
+              ns("tile_color_2"),
+              "Choose second tile color:",
+              value = "#A2EBAC"
+            )
+        )
+      )
+    ),
   )
 }
 
 
-userInput_server <- function(id) {
-
+userInput_server <- function(id, herringbone_sv) {
+  
   moduleServer(id, function(input, output, session) {
     
     observeEvent(input$wall_height_num, {
@@ -182,8 +228,19 @@ userInput_server <- function(id) {
     })
     
     observeEvent(input$tile_spacing_num, {
-      numeric_error <- validate_numeric_input(input$tile_spacing_num, min_value = 0, max_value = 20)
+      numeric_error <- validate_numeric_input(input$tile_spacing_num, min_value = 0, max_value = 100)
       output$numeric_error_tile_spacing <- renderText({
+        if (!is.null(numeric_error)) {
+          return(numeric_error)
+        } else {
+          return("")
+        }
+      })
+    })
+
+    observeEvent(input$tile_ratio_num, {
+      numeric_error <- validate_numeric_input(input$tile_ratio_num, min_value = 2, max_value = 20)
+      output$numeric_error_tile_ratio <- renderText({
         if (!is.null(numeric_error)) {
           return(numeric_error)
         } else {
@@ -236,13 +293,21 @@ userInput_server <- function(id) {
     }), millis = 500)
     
     tile_spacing <- debounce(reactive({
-      if (is.null(validate_numeric_input(input$tile_spacing_num, min_value = 0, max_value = 20))) {
+      if (is.null(validate_numeric_input(input$tile_spacing_num, min_value = 0, max_value = 100))) {
         input$tile_spacing_num
       } else {
         5
       }
     }), millis = 500)
-    
+
+    tile_ratio <- debounce(reactive({
+      if (is.null(validate_numeric_input(input$tile_ratio_num, min_value = 2, max_value = 20))) {
+        input$tile_ratio_num
+      } else {
+        2
+      }
+    }), millis = 500)
+
     offset <- debounce(reactive({
       if (is.null(validate_numeric_input(input$offset_num, min_value = 0, max_value = 500))) {
         input$offset_num
@@ -250,11 +315,83 @@ userInput_server <- function(id) {
         25
       }
     }), millis = 500)
-    
+
+    tile_color <- debounce(reactive(
+      input$tile_color
+    ), millis = 500)
+
+    tile_color_2 <- debounce(reactive(
+      input$tile_color_2
+    ), millis = 500)
+
     pattern_dropdown <- reactive({
       input$pattern_dropdown
     })
 
+    # 2 way sync
+    updating <- reactiveValues(flag = TRUE)
+
+    observe({
+
+      if(input$pattern_dropdown == "Herringbone") {
+
+        observeEvent(input$tile_height_num, {
+          if(input$pattern_dropdown == "Herringbone") {
+            if(updating$flag){
+              updating$flag <- FALSE
+              cat("change tile_height \n")
+              herringbone_sv$tile_height <- input$tile_height_num
+              herringbone_sv$input_type <- "tile_height"
+              later(function() {
+                updating$flag <- TRUE
+              }, 0.5)
+            }
+          }
+        })
+
+        observeEvent(input$tile_width_num, {
+          if(input$pattern_dropdown == "Herringbone") {
+            if(updating$flag){
+              updating$flag <- FALSE
+              cat("change tile_width \n")
+              herringbone_sv$tile_width <- input$tile_width_num
+              herringbone_sv$input_type <- "tile_width"
+              later(function() {
+                updating$flag <- TRUE
+              }, 0.5)
+            }
+          }
+        })
+
+        observeEvent(input$tile_ratio_num, {
+          if(input$pattern_dropdown == "Herringbone") {
+            if(updating$flag){
+              updating$flag <- FALSE
+              cat("change tile_ratio \n")
+              herringbone_sv$tile_ratio <- input$tile_ratio_num
+              herringbone_sv$input_type <- "tile_ratio"
+              later(function() {
+                updating$flag <- TRUE
+              }, 0.5)
+            }
+          }
+        })
+
+        observeEvent(input$tile_spacing_num, {
+          if(input$pattern_dropdown == "Herringbone") {
+            if(updating$flag){
+              updating$flag <- FALSE
+              cat("change tile_spacing \n")
+              later(function() {
+                updating$flag <- TRUE
+              }, 0.5)
+            }
+          }
+        })
+
+      }
+    })
+    
     return(
       list(
         wall_height = wall_height,
@@ -263,9 +400,13 @@ userInput_server <- function(id) {
         tile_width = tile_width,
         tile_spacing = tile_spacing,
         offset = offset,
-        pattern_dropdown = pattern_dropdown
+        tile_ratio = tile_ratio,
+        tile_color = tile_color,
+        tile_color_2 = tile_color_2,
+        pattern_dropdown = pattern_dropdown,
+        session = session
       )
     )
   })
-
+  
 }

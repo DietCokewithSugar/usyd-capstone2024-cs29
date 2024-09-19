@@ -2,62 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tile App - About Us</title>
-    <link rel="stylesheet" href="styles.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Tiling App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-
-    <div class="container about-container">
-        <!-- 公司介绍部分 -->
-        <section class="company-info">
-            <h1 class="text-center">About Us</h1>
-            <p class="text-center">
-                Welcome to Tile App, your one-stop solution for custom tile design. We are committed to providing the best user experience
-                and a wide variety of designs to meet the needs of designers, architects, and homeowners alike.
-            </p>
-            <p class="text-center">
-                Founded in 2024, our mission is to make tile design and customization accessible and enjoyable for everyone.
-                Whether you're renovating your home or designing a commercial space, our app is here to help you every step of the way.
-            </p>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <section class="mb-12">
+            <h1 class="text-4xl font-bold text-center mb-6">About Us</h1>
+            <p class="text-lg text-gray-700 mb-4">
+                Welcome to the Tiling App, a revolutionary user interface designed to streamline tile selection, layout design, and cost estimation for homeowners, contractors, and designers. Our app is part of RenoPilot's innovative solution to address the challenges faced in the global home improvement industry.
+            </p >
+            <p class="text-lg text-gray-700 mb-4">
+                Founded in 2024, our mission is to empower users to make informed decisions when selecting materials and designs for tiling projects. Whether you're renovating your home or designing a commercial space, our app is here to help you every step of the way, providing instant cost estimates and visual previews within minutes.
+            </p >
         </section>
-        
-        <!-- 团队成员部分 -->
-        <section class="team">
-            <h2 class="text-center">Meet the Team</h2>
-            <div class="row">
-                <div class="col-md-4 team-member">
-                    <img src="images/team1.jpg" alt="Team Member 1" class="img-fluid rounded-circle">
-                    <h4 class="text-center">John Doe</h4>
-                    <p class="text-center">Founder & CEO</p>
-                    <p class="text-center">John is the visionary behind Tile App, with over 15 years of experience in design and technology.</p>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold text-center mb-6">Meet the Team</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <img src="img11.jpg" alt="Kaizhou Wang" class="rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Kaizhou Wang</h3>
+                    <p class="text-gray-600">Group Leader</p >
                 </div>
-                <div class="col-md-4 team-member">
-                    <img src="images/team2.jpg" alt="Team Member 2" class="img-fluid rounded-circle">
-                    <h4 class="text-center">Jane Smith</h4>
-                    <p class="text-center">Chief Designer</p>
-                    <p class="text-center">Jane leads our design team, bringing creativity and innovation to every tile pattern we offer.</p>
+                <div class="text-center">
+                    <img src="img12.jpg" alt="Jinghao Shi" class="rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Jinghao Shi</h3>
+                    <p class="text-gray-600">Lead Frontend Developer</p >
                 </div>
-                <div class="col-md-4 team-member">
-                    <img src="images/team3.jpg" alt="Team Member 3" class="img-fluid rounded-circle">
-                    <h4 class="text-center">Bob Johnson</h4>
-                    <p class="text-center">CTO</p>
-                    <p class="text-center">Bob is our tech guru, ensuring that our app runs smoothly and efficiently for all users.</p>
+                <div class="text-center">
+                    <img src="img13.jpg" alt="Gunjit Jayant" class="rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Gunjit Jayant</h3>
+                    <p class="text-gray-600">Backend Developer & Database Specialist</p >
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                <div class="text-center">
+                    <img src="img14.jpg" alt="Zijing Ding" class="rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Zijing Ding</h3>
+                    <p class="text-gray-600">UX Designer & Frontend Developer</p >
+                </div>
+                <div class="text-center">
+                    <img src="img15.jpg" alt="Jingchen Liu" class="rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Jingchen Liu</h3>
+                    <p class="text-gray-600">QA Specialist & Documentation Lead</p >
                 </div>
             </div>
         </section>
 
-        <!-- 联系信息部分 -->
-        <section class="contact-info">
-            <h2 class="text-center">Contact Us</h2>
-            <p class="text-center">We'd love to hear from you! Here's how you can reach us:</p>
-            <ul class="list-unstyled text-center">
-                <li><strong>Email:</strong> support@tileapp.com</li>
-                <li><strong>Phone:</strong> +1 (800) 555-1234</li>
-                <li><strong>Address:</strong> 1234 Design Street, Los Santos, CA</li>
+        <section>
+            <h2 class="text-3xl font-semibold text-center mb-6">Our Tiling App Features</h2>
+            <ul class="list-disc list-inside text-lg text-gray-700 mb-4">
+                <li>Support for four layout types: Stack, Herringbone, Basketweave, and Lattice</li>
+                <li>Input surface dimensions and add obstacles</li>
+                <li>Instant cost estimates and visual previews</li>
+                <li>User-friendly interface for efficient design and estimation</li>
+                <li>Secure data storage in RenoPilot's Azure database</li>
             </ul>
         </section>
-    </div>
 
+        <section class="mt-12">
+            <h2 class="text-3xl font-semibold text-center mb-6">Contact Us</h2>
+            <p class="text-lg text-gray-700 text-center">
+                For more information about our Tiling App or to provide feedback, please contact RenoPilot.
+            </p >
+        </section>
+    </div>
 </body>
 </html>
