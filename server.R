@@ -1,12 +1,9 @@
 library(shiny)
 
-source("R/userInput.R")
-source("R/horizontalStack.R")
-source("R/herringbone.R")
-source("R/basketweave.R")
-source("R/lattice.R")
-source("R/obstacles.R")
-source("R/landingPage.R")
+
+source("R/controller.R")
+source("R/pattern.R")
+source("R/designUI.R")
 
 server <- function(input, output, session) {
   herringbone_sv <- reactiveValues(tile_width = 40, tile_height = 20, tile_ratio = 2, input_type = NULL)
@@ -91,13 +88,13 @@ server <- function(input, output, session) {
   output$dynamicUI <- renderUI({
     # Assuming there is a variable `someVar` from the user input that determines which UI to show
     if (userInput_server_return_values$pattern_dropdown() == "Stack") {
-      horizontalStack_ui("horizontalStack")
+      design_ui("horizontalStack")
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
-      herringbone_ui("herringbone")
+      design_ui("herringbone")
     } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-      basketweave_ui("basketweave")
+      design_ui("basketweave")
     } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
-      lattice_ui("lattice")
+      design_ui("lattice")
     } else {
       # other_module_ui("otherModule")  # Assuming another module UI is defined
     }
