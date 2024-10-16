@@ -12,9 +12,8 @@ horizontalStack_ui <- function(id) {
       div(
         style = "margin-top: 20px; text-align: center; display: flex; justify-content: center;",
         div(style = "margin-right: 20px;", textOutput(ns("fullTilesCount"))),
-        div(style = "margin-left: 20px;", textOutput(ns(
-          "splitTilesCount"
-        )))
+        div(style = "margin-left: 20px;", textOutput(ns("splitTilesCount"))),
+        div(style = "margin-left: 20px;", textOutput(ns("tileCostSum"))),
       ),
       
       div(
@@ -70,7 +69,8 @@ horizontalStack_server <- function(id,
       offset_x = 0,
       offset_y = 0,
       full_tiles = 0,
-      split_tiles = 0
+      split_tiles = 0,
+      tile_cost_sum = 0
     )
 
     observeEvent(input$up, {
@@ -92,8 +92,6 @@ horizontalStack_server <- function(id,
     observeEvent(input$reset, {
       values$offset_x <- 0
       values$offset_y <- 0
-      values$full_tiles <- 0
-      values$split_tiles <- 0
     })
     
     output$dynamicWallPlot <- renderUI({
@@ -119,7 +117,11 @@ horizontalStack_server <- function(id,
       
       plot.new()
       plot.window(xlim = c(0, ww), ylim = c(0, wh))
-      
+
+      tile_list <- list()
+      full_tiles <- 0
+      split_tiles <- 0
+
       draw_tile <- function(x, y) {
         polygon(
           c(x, x, x + tw, x + tw),
@@ -127,38 +129,51 @@ horizontalStack_server <- function(id,
           col = tc,
           border = "black"
         )
+        group_data <- list(c(x, y), c(x, y + th), c(x + tw, y + th), c(x + tw, y))
+        tile_list <<- c(tile_list, list(group_data))
       }
-      
-      full_tiles <- 0
-      split_tiles <- 0
-      
+
+
       y_position <- -th + values$offset_y
       row_counter <- 1
       while (y_position <= wh + 100) {
         x_position <- ifelse(row_counter %% 2 == 0, -tw + off, -tw) + values$offset_x
         while (x_position <= ww + 100) {
           draw_tile(x_position, y_position)
-          
-          if (x_position >= box_x &&
-              x_position + tw <= box_x + ww &&
-              y_position >= box_y &&
-              y_position + th <= box_y + wh) {
-            full_tiles <- full_tiles + 1
-          } else if ((x_position + tw > box_x &&
-                      x_position < box_x + ww) &&
-                     (y_position + th > box_y &&
-                      y_position < box_y + wh)) {
-            split_tiles <- split_tiles + 1
-          }
-          
           x_position <- x_position + tw + ts
         }
         y_position <- y_position + th + ts
         row_counter <- row_counter + 1
       }
-      
-      values$full_tiles <- full_tiles
-      values$split_tiles <- split_tiles
+
+
+
+      observe({
+        # 调用 tileCountAndCost 模块
+        tile_count_result <- tileCountAndCost(
+          box_x = box_x,
+          box_y = box_y,
+          ww = ww,
+          wh = wh,
+          tile_1_list = tile_list,  # 传递你的数据
+          tile_1_cost = 10,
+          tile_2_list = NULL,
+          tile_2_cost = NULL,    # 或者传递正确的值
+          tile_3_list = NULL,
+          tile_3_cost = NULL,
+          tile_4_list = NULL,
+          tile_4_cost = NULL
+        )
+
+
+
+        # 将结果存入 reactiveValues
+        values$full_tiles <- tile_count_result$full_tiles_1
+        values$split_tiles <- tile_count_result$split_tiles_1
+        values$tile_cost_sum <- tile_count_result$tile_cost_sum
+      })
+
+
       
       polygon(
         c(box_x, box_x, box_x + ww, box_x + ww),
@@ -249,5 +264,11 @@ horizontalStack_server <- function(id,
     output$splitTilesCount <- renderText({
       paste("Split tiles:", values$split_tiles)
     })
+
+    output$tileCostSum <- renderText({
+      paste("Tile Cost Summary:", values$tile_cost_sum)
+    })
+
+
   })
 }
