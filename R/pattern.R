@@ -1,4 +1,3 @@
-
 herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile_spacing, tile_color, tile_color_2, obstacles, input_session) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Define ns inside the moduleServer function
@@ -217,15 +216,7 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
 
 
 
-horizontalStack_server <- function(id,
-                                   wall_height,
-                                   wall_width,
-                                   tile_height,
-                                   tile_width,
-                                   tile_spacing,
-                                   offset,
-                                   tile_color,
-                                   obstacles) {
+horizontalStack_server <- function(id, wall_height, wall_width, tile_height, tile_width, tile_spacing, offset, tile_color, texture_option, obstacles) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -269,6 +260,10 @@ horizontalStack_server <- function(id,
       )
     })
     
+    # Load texture images
+    brick_texture <- png::readPNG("www/brick.png")
+    marble_texture <- png::readPNG("www/marble.png")
+
     output$wallPlot <- renderPlot({
       wh <- wall_height()
       ww <- wall_width()
@@ -286,12 +281,21 @@ horizontalStack_server <- function(id,
       plot.window(xlim = c(0, ww), ylim = c(0, wh))
       
       draw_tile <- function(x, y) {
-        polygon(
-          c(x, x, x + tw, x + tw),
-          c(y, y + th, y + th, y),
-          col = tc,
-          border = "black"
-        )
+        if (texture_option() != "None") {
+          # Use texture
+          texture_img <- switch(texture_option(),
+                                "Brick" = brick_texture,
+                                "Marble" = marble_texture)
+          rasterImage(texture_img, x, y, x + tw, y + th)
+        } else {
+          # Use solid color
+          polygon(
+            c(x, x, x + tw, x + tw),
+            c(y, y + th, y + th, y),
+            col = tc,
+            border = "black"
+          )
+        }
       }
       
       full_tiles <- 0

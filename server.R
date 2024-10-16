@@ -111,6 +111,7 @@ server <- function(input, output, session) {
         tile_spacing = userInput_server_return_values$tile_spacing,
         offset = userInput_server_return_values$offset,
         tile_color = userInput_server_return_values$tile_color,
+        texture_option = userInput_server_return_values$texture_option,
         obstacles = obstaclesServer_return_values
       )
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {

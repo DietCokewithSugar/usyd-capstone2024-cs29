@@ -149,6 +149,10 @@ userInput_server <- function(id, herringbone_sv) {
       input$pattern_dropdown
     })
     
+    texture_option <- debounce(reactive(
+      input$texture_option
+    ), millis = 500)
+    
     # 2 way sync
     updating <- reactiveValues(flag = TRUE)
     
@@ -225,6 +229,7 @@ userInput_server <- function(id, herringbone_sv) {
         tile_color = tile_color,
         tile_color_2 = tile_color_2,
         pattern_dropdown = pattern_dropdown,
+        texture_option = texture_option,
         session = session
       )
     )

@@ -175,6 +175,19 @@ userInput_ui <- function(id) {
         )
       )
     ),
+    fluidRow(
+      column(
+        12,
+        div(style = "position: relative;",
+            selectInput(
+              ns("texture_option"),
+              "Choose tile texture:",
+              choices = c("None", "Brick", "Marble"),
+              selected = "None"
+            )
+        )
+      )
+    )
   )
 }
 
