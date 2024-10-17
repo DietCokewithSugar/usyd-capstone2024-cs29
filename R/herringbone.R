@@ -1,85 +1,69 @@
+source("R/tileCountAndCost.R")
+
+
 herringbone_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    fluidPage(
-      column(
-        12,
-        div(
-          style = "display: flex; justify-content: center; align-items: center; height: 100%;",  # Center the content
-          uiOutput(ns("dynamicWallPlot"))  # Dynamically generate plotOutput
-        )
-      )
-    ),
-    absolutePanel(
-      bottom = "20px",  # Position the panel near the bottom
-      left = "50%",
-      width = "auto",
-      height = "auto",
-      style = "transform: translateX(-50%);",  # Center the panel horizontally
-      div(
-        style = "display: flex; justify-content: space-between; align-items: center; width: 250px;",  # Adjust width as needed
-        actionButton(
-          ns("left"),
-          "",
-          icon = icon("arrow-left"),
-          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
-        ),
-        actionButton(
-          ns("up"),
-          "",
-          icon = icon("arrow-up"),
-          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
-        ),
-        actionButton(
-          ns("down"),
-          "",
-          icon = icon("arrow-down"),
-          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
-        ),
-        actionButton(
-          ns("right"),
-          "",
-          icon = icon("arrow-right"),
-          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
-        ),
-        actionButton(
-          ns("reset"),
-          "",
-          icon = icon("refresh"),
-          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
-        )
-      )
-    ),
-    fluidPage(
-      # tags$head(
-      #   tags$style(HTML("
-      #     #right_slider .jslider {
-      #       transform: rotate(270deg);
-      #       height: 200px;
-      #     }
-      #     #right_slider .jslider-pointer {
-      #       transform: translate(-10px, 0) !important;
-      #     }
-      #   "))
-      # ),
-      fluidRow(
+  tagList(fluidPage(column(
+    12,
+    div(
+      style = "display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%;",
 
+      uiOutput(ns("dynamicWallPlot")),
+
+      div(
+        style = "margin-top: 20px; text-align: center; display: flex; justify-content: center;",
+        div(style = "margin-right: 20px;", textOutput(ns("fullTilesCount"))),
+        div(style = "margin-left: 20px;", textOutput(ns("splitTilesCount"))),
+        div(style = "margin-left: 20px;", textOutput(ns("tileCostSum"))),
+      ),
+
+      div(
+        style = "margin-top: 20px; display: flex; justify-content: center; align-items: center;",
+        div(
+          style = "display: flex; justify-content: space-between; align-items: center; width: 320px;",
+          actionButton(
+            ns("left"),
+            "",
+            icon = icon("arrow-left"),
+            style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
+          ),
+          actionButton(ns("up"), "", icon = icon("arrow-up"), style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"),
+          actionButton(
+            ns("down"),
+            "",
+            icon = icon("arrow-down"),
+            style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
+          ),
+          actionButton(
+            ns("right"),
+            "",
+            icon = icon("arrow-right"),
+            style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
+          ),
+          actionButton(
+            ns("reset"),
+            "",
+            icon = icon("refresh"),
+            style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;"
+          )
+        )
       )
     )
-  )
+  )))
 }
 
-herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile_spacing, tile_color, tile_color_2, obstacles, input_session) {
+herringbone_server <- function(id, wall_offset_x, wall_offset_y, wall_spacing, wall_height, wall_width, herringbone_sv, tile_spacing, tile_color, tile_color_2, obstacles, input_session) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Define ns inside the moduleServer function
     values <- reactiveValues(
       box_x = 0,
       box_y = 0,
       offset_x = 0,
-      offset_y = 0
+      offset_y = 0,
+      full_tiles = 0,
+      split_tiles = 0,
+      tile_cost_sum = 0,
     )
-
-
 
     observeEvent(input$up, {
       values$offset_y <- values$offset_y - 1  # Move box up
@@ -101,7 +85,6 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
       values$offset_x <- 0
       values$offset_y <- 0
     })
-
 
     # 计算长宽比或根据输入的长/宽进行计算
     observe({
@@ -136,6 +119,9 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
     output$wallPlot <- renderPlot({
       wh <- wall_height()
       ww <- wall_width()
+      # wox <- wall_offset_x()
+      # woy <- wall_offset_y()
+      # ws <- wall_spacing()
       th <- herringbone_sv$tile_height  # Assume height is shorter dimension for horizontal tiles
       tw <- herringbone_sv$tile_width   # Assume width is longer dimension for horizontal tiles
       ts <- tile_spacing()
@@ -155,8 +141,9 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
       updateSliderInput(session, ns("tile_width"), value = values$tile_width)
       updateNumericInput(session, ns("tile_width_num"), value = values$tile_width)
 
-
-
+      tile_list <- list()
+      full_tiles <- 0
+      split_tiles <- 0
 
       # base point on top left
       draw_horizontal_tile <- function(x, y) {
@@ -166,6 +153,8 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
           col = tc,
           border = "black"
         )
+        group_data <- list(c(x, y - th), c(x + tw, y - th), c(x + tw, y), c(x, y))
+        tile_list <<- c(tile_list, list(group_data))
       }
 
       # base point on top left
@@ -177,6 +166,8 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
           col = tc2,
           border = "black"
         )
+        group_data <- list(c(x, y - tw), c(x + th, y - tw), c(x + th, y), c(x, y))
+        tile_list <<- c(tile_list, list(group_data))
       }
 
       # base point on top left
@@ -184,6 +175,7 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
         draw_horizontal_tile(x + th + ts, y)
         draw_vertical_tile(x, y)
       }
+
 
 
       x_position <- -(tw + th + ts) + values$offset_x
@@ -216,6 +208,33 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
         x_position <- x_position + th + ts
         y_position <- y_position - th - ts
       }
+
+
+
+      observe({
+        # 调用 tileCountAndCost 模块
+        tile_count_result <- tileCountAndCost(
+          box_x = box_x,
+          box_y = box_y,
+          ww = ww,
+          wh = wh,
+          tile_1_list = tile_list,  # 传递你的数据
+          tile_1_cost = 10,
+          tile_2_list = NULL,
+          tile_2_cost = NULL,    # 或者传递正确的值
+          tile_3_list = NULL,
+          tile_3_cost = NULL,
+          tile_4_list = NULL,
+          tile_4_cost = NULL
+        )
+
+
+
+        # 将结果存入 reactiveValues
+        values$full_tiles <- tile_count_result$full_tiles_1
+        values$split_tiles <- tile_count_result$split_tiles_1
+        values$tile_cost_sum <- tile_count_result$tile_cost_sum
+      })
 
 
 
@@ -279,5 +298,18 @@ herringbone_server <- function(id, wall_height, wall_width, herringbone_sv, tile
       rect(box_x + ww, -100, ww + 100, box_y, col = rgb(1, 1, 1, 1), border = NA)
 
     }, height = wall_height(), width = wall_width())
+
+    output$fullTilesCount <- renderText({
+      paste("Full tiles:", values$full_tiles)
+    })
+
+    output$splitTilesCount <- renderText({
+      paste("Split tiles:", values$split_tiles)
+    })
+
+    output$tileCostSum <- renderText({
+      paste("Tile Cost Summary:", values$tile_cost_sum)
+    })
+
   })
 }
