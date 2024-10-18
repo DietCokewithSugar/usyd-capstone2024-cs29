@@ -14,76 +14,43 @@ server <- function(input, output, session) {
   
   #dynamic page rendering starts
   
-  current_ui <- reactiveVal("landingPage")
+  current_ui <- reactiveVal("secondPage")
   page_data <- reactiveVal(NULL)
-
+  
   switch_ui <- function(new_ui, values = NULL) {
     if (!is.null(values)) {
       page_data(values)
     }
     current_ui(new_ui)
   }
-
+  
   observe({
     ui <- current_ui()
-
-    if (ui == "landingPage") {
-      output$new_ui_container <- renderUI({
-        landingPage_ui("landing_page")
-      })
-      landingPage_server("landing_page", switch_ui = switch_ui)
-
-    } else if (ui == "secondPage") {
-      output$new_ui_container <- renderUI({
-        secondPage_ui("second_page")
-      })
-      secondPage_server("second_page", selected_values = page_data(), switch_ui = switch_ui)
-
-    } else if (ui == "finalPage") {
-      output$new_ui_container <- renderUI({
-        finalPage_ui("final_page")
-      })
-      finalPage_server("final_page", input_data = page_data(), switch_ui = switch_ui)
-    }
+    cat("Switching to UI:", ui, "\n")  # Debugging log
+    
+    isolate({
+      if (ui == "landingPage") {
+        output$new_ui_container <- renderUI({
+          landingPage_ui("landing_page")
+        })
+        landingPage_server("landing_page", selected_values = page_data(), switch_ui = switch_ui)
+        
+      } else if (ui == "secondPage") {
+        output$new_ui_container <- renderUI({
+          secondPage_ui("second_page")  # Pass stored values
+        })
+        secondPage_server("second_page", switch_ui = switch_ui)
+        
+      } else if (ui == "finalPage") {
+        output$new_ui_container <- renderUI({
+          finalPage_ui("final_page")
+        })
+        finalPage_server("final_page", input_data = page_data(), switch_ui = switch_ui)
+      }
+    })
   })
   
   #dynamic page rendering ends
-  
-
-  #dynamic page rendering starts
-  
-  current_ui <- reactiveVal("landingPage")
-  page_data <- reactiveVal(NULL)
-  
-  switch_ui <- function(new_ui, values = NULL) {
-    if (!is.null(values)) {
-      page_data(values)
-    }
-    current_ui(new_ui)
-  }
-  
-  observe({
-    ui <- current_ui()
-    
-    if (ui == "landingPage") {
-      output$new_ui_container <- renderUI({
-        landingPage_ui("landing_page")
-      })
-      landingPage_server("landing_page", switch_ui = switch_ui)
-      
-    } else if (ui == "secondPage") {
-      output$new_ui_container <- renderUI({
-        secondPage_ui("second_page")
-      })
-      secondPage_server("second_page", selected_values = page_data(), switch_ui = switch_ui)
-      
-    } else if (ui == "finalPage") {
-      output$new_ui_container <- renderUI({
-        finalPage_ui("final_page")
-      })
-      finalPage_server("final_page", input_data = page_data())
-    }
-  })
   
   output$dynamicUI <- renderUI({
     # Assuming there is a variable `someVar` from the user input that determines which UI to show

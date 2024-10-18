@@ -251,29 +251,29 @@ design_ui <- function(id) {
 
 
 
-obstaclesUI <- function(id) {
-  ns <- NS(id)
-  tagList(
-    fluidRow(
-      column(
-        12,
-        div(
-          style = "text-align: center;",
-          actionButton(ns("add_obstacle"), "Add Obstacle")
-        )
-      )
-    ),
-    fluidRow(
-      column(
-        12,
-        div(
-          style = "text-align: center;",
-          uiOutput(ns("obstacle_tiles"))
-        )
-      )
-    )
-  )
-}
+# obstaclesUI <- function(id) {
+#   ns <- NS(id)
+#   tagList(
+#     fluidRow(
+#       column(
+#         12,
+#         div(
+#           style = "text-align: center;",
+#           actionButton(ns("add_obstacle"), "Add Obstacle")
+#         )
+#       )
+#     ),
+#     fluidRow(
+#       column(
+#         12,
+#         div(
+#           style = "text-align: center;",
+#           uiOutput(ns("obstacle_tiles"))
+#         )
+#       )
+#     )
+#   )
+# }
 
 
 
@@ -291,16 +291,34 @@ landingPage_ui <- function(id) {
         div(
           style = "background-color: white; padding: 20px; border-radius: 10px; width: 25%;",
           
-          # Dropdown for Layout Options
+          # Select Class
+          selectInput(
+            ns("class_option"),
+            "Select a Class:",
+            choices = c("One tile patterns", "Two tile patterns", "Three tile patterns", "Four (and more) tile patterns"),
+            selected = "One tile patterns",  # Default value
+            width = '100%'
+          ),
+          
+          # Select Family (Initially populated with families for the first class)
+          selectInput(
+            ns("family_option"),
+            "Select a Family:",
+            choices = c("Family A", "Family B", "Family C"),
+            selected = "Family A",  # Default value
+            width = '100%'
+          ),
+          
+          # Select Layout (Initially populated with layouts for the first family)
           selectInput(
             ns("layout_option"),
-            "Select a Layout Option:",
-            choices = c("Stack", "Herringbone", "Basketweave", "Lattice"),
+            "Select a Pattern:",
+            choices = c("Stack", "Herringbone"),
             selected = "Stack",  # Default value
             width = '100%'
           ),
           
-          # Top Button (NEXT)
+          # Next Button
           div(
             actionButton(
               ns("next_button"),
@@ -309,7 +327,7 @@ landingPage_ui <- function(id) {
             )
           ),
           
-          # Bottom Button (Reset)
+          # Reset Button
           div(
             actionButton(
               ns("reset"),
@@ -337,29 +355,70 @@ secondPage_ui <- function(id) {
         div(
           style = "background-color: white; padding: 20px; border-radius: 10px; width: 50%;",
           
-          fluidRow(
-            column(
-              width = 12,
-              h4("Selected Layout Option:"),
-              textOutput(ns("selected_layout_option"))
-            )
-          ),
+          # Existing inputs for wall dimensions, tile size, etc.
+          numericInput(ns("wall_height"), "Wall Height:", value = 100, min = 100, max = 3000, width = '100%'),
+          numericInput(ns("wall_width"), "Wall Width:", value = 100, min = 100, max = 1200, width = '100%'),
+          numericInput(ns("wall_offset"), "Tile Offset:", value = 0, min = 0, max = 500, width = '100%'),
           
-          numericInput(ns("wall_height"), "Wall Height:", value = 300, min = 100, max = 900, width = '100%'),
-          numericInput(ns("wall_width"), "Wall Width:", value = 500, min = 100, max = 1200, width = '100%'),
-          numericInput(ns("wall_offset"), "Wall Offset:", value = 25, min = 0, max = 500, width = '100%'),
-          numericInput(ns("wall_grout"), "Wall Grout:", value = 5, min = 0, max = 20, width = '100%'),
-          selectInput(ns("tile_size"), "Tile Size:", choices = c("30x30", "50x50", "70x70"), selected = "50x50", width = '100%'),
+          selectInput(
+            ns("tile_size"),
+            "Tile Size:",
+            choices = c("50x50", "75x75", "100x100", "150x150", "200x200", "300x300", "400x400", "450x450", "600x600", "900x900"),
+            selected = "50x50",
+            width = '100%'
+          ),
+          selectInput(
+            ns("wall_grout"),
+            "Tile Grout:",
+            choices = c(2, 3, 4, 5, 6, 7, 8, 9, 10),
+            selected = 2,
+            width = '100%'
+          ),
           
           div(
             style = "margin-top: 20px;",
             actionButton(ns("submit_button"), "Next", style = "width: 100%; background-color: #add8e6; color: black; margin-bottom: 10px;"),
-            actionButton(ns("back"), "Back", style = "width: 100%; background-color: #ffa500; color: white; margin-top: 10px;")  # Orange for back
+            actionButton(ns("back"), "Back", style = "width: 100%; background-color: #ffa500; color: white; margin-top: 10px;")
           ),
           
+          # Side-by-Side Obstacle Form
           div(
             style = "margin-top: 20px;",
-            obstaclesUI(ns("obstacles_module"))  
+            h4("Add Obstacle"),
+            fluidRow(
+              column(
+                width = 4,
+                textInput(ns("new_obstacle_name"), "Obstacle Name", width = "100%")
+              ),
+              column(
+                width = 4,
+                numericInput(ns("new_obstacle_width"), "Obstacle Width", value = 100, min = 1)
+              ),
+              column(
+                width = 4,
+                numericInput(ns("new_obstacle_height"), "Obstacle Height", value = 100, min = 1)
+              )
+            ),
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(ns("top"), "Distance from Top", value = 50, min = 1)
+              ),
+              column(
+                width = 4,
+                numericInput(ns("left"), "Distance from Left", value = 50, min = 1)
+              ),
+              column(
+                width = 4,
+                actionButton(ns("add_obstacle"), "Add Obstacle", style = "width: 100%; background-color: #4CAF50; color: white; margin-top: 25px;")
+              )
+            )
+          ),
+          
+          # Display the obstacles
+          div(
+            uiOutput(ns("obstacle_tiles")),
+            style = "margin-top: 20px;"
           )
         )
       )
@@ -372,9 +431,17 @@ secondPage_ui <- function(id) {
 finalPage_ui <- function(id) {
   ns <- NS(id)
   
-  tagList(
-    tags$head(tags$style(
-      HTML("
+  tagList(tags$head(tags$style(
+    HTML(
+      "
+      .colourpicker-input-container {
+      position: relative;
+    }
+    .colourpicker-panel {
+      position: absolute !important;
+      bottom: 100% !important;
+      margin-bottom: 10px !important;
+    }
         .button-shadow {
           box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.4);
           transition: all 0.3s ease;
@@ -412,84 +479,132 @@ finalPage_ui <- function(id) {
           font-size: 16px;
           font-weight: bold;
         }
-      ")
-    )),
+      "
+    )
+  )), fluidPage(
+    # Center the tile plot container in the middle of the screen
+    div(class = "centered-container", uiOutput(ns(
+      "dynamicWallPlot"
+    ))),
     
-    fluidPage(
-      # Center the tile plot container in the middle of the screen
-      div(class = "centered-container", uiOutput(ns("dynamicWallPlot"))),
-      
-      # Bottom controls container that holds tile counts and buttons
+    # Bottom controls container that holds tile counts and buttons
+    div(
+      class = "bottom-controls",
+      # Tile counts displayed above the arrow buttons
       div(
-        class = "bottom-controls",
-        # Tile counts displayed above the arrow buttons
+        class = "tile-count-container",
+        div(class = "tile-count", textOutput(ns("fullTileCount"))),
+        div(class = "tile-count", textOutput(ns("splitTileCount")))
+      ),
+      
+      # Arrow buttons and controls at the bottom
+      div(
+        class = "button-group",
+        actionButton(
+          ns("fast_left"),
+          "",
+          icon = icon("fast-backward"),
+          class = "button-shadow",
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("fast_up"),
+          "",
+          icon = icon("angle-double-up"),
+          # Correct icon for fast upward movement
+          class = "button-shadow",
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("fast_down"),
+          "",
+          icon = icon("angle-double-down"),
+          # Correct icon for fast downward movement
+          class = "button-shadow",
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("left"),
+          "",
+          icon = icon("arrow-left"),
+          class = "button-shadow",
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("up"),
+          "",
+          icon = icon("arrow-up"),
+          class = "button-shadow",
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("down"),
+          "",
+          icon = icon("arrow-down"),
+          class = "button-shadow",
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("right"),
+          "",
+          class = "button-shadow",
+          icon = icon("arrow-right"),
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("fast_right"),
+          "",
+          icon = icon("fast-forward"),
+          class = "button-shadow",
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        actionButton(
+          ns("reset"),
+          "",
+          class = "button-shadow",
+          icon = icon("refresh"),
+          style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        ),
+        downloadButton(
+          ns("download_plot"),
+          "",
+          class = "button-shadow",
+          icon = icon("download"),
+          style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
+        )
+      ),
+      div(
+        class = "button-group",
+        style = "margin-top: 20px; display: flex; align-items: center; gap: 15px;",
+        
+        # Wrapping colourInput in a div for styling
         div(
-          class = "tile-count-container",
-          div(class = "tile-count", textOutput(ns("fullTileCount"))),
-          div(class = "tile-count", textOutput(ns("splitTileCount")))
+          style = "flex-grow: 1; width: 100%;",
+          colourInput(
+            ns("tile_color"),
+            "Choose Tile Color",
+            value = "#ADD8E6"
+          )
         ),
         
-        # Arrow buttons and controls at the bottom
-        div(
-          class = "button-group",
-          actionButton(
-            ns("fast_left"),
-            "",
-            icon = icon("fast-backward"),
-            class = "button-shadow",
-            style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          ),
-          actionButton(
-            ns("left"),
-            "",
-            icon = icon("arrow-left"),
-            class = "button-shadow",
-            style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          ),
-          actionButton(
-            ns("up"),
-            "",
-            icon = icon("arrow-up"),
-            class = "button-shadow",
-            style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          ),
-          actionButton(
-            ns("down"),
-            "",
-            icon = icon("arrow-down"),
-            class = "button-shadow",
-            style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          ),
-          actionButton(
-            ns("right"),
-            "",
-            class = "button-shadow",
-            icon = icon("arrow-right"),
-            style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          ),
-          actionButton(
-            ns("fast_right"),
-            "",
-            icon = icon("fast-forward"),
-            class = "button-shadow",
-            style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          ),
-          actionButton(
-            ns("reset"),
-            "",
-            class = "button-shadow",
-            icon = icon("refresh"),
-            style = "border-radius: 50%; width: 50px; height: 50px; margin-right: 10px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          ),
-          downloadButton(
-            ns("download_plot"),
-            "",
-            class = "button-shadow",
-            icon = icon("download"),
-            style = "border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; background-color: lightblue;"
-          )
+        # Button to change the tile color
+        actionButton(
+          ns("change_color"),
+          "Change Tile Color",
+          class = "button-shadow",
+          style = "
+        border-radius: 5px;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      "
         )
       )
+
     )
-  )
+  ))
 }
