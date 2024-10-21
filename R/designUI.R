@@ -251,29 +251,29 @@ design_ui <- function(id) {
 
 
 
-# obstaclesUI <- function(id) {
-#   ns <- NS(id)
-#   tagList(
-#     fluidRow(
-#       column(
-#         12,
-#         div(
-#           style = "text-align: center;",
-#           actionButton(ns("add_obstacle"), "Add Obstacle")
-#         )
-#       )
-#     ),
-#     fluidRow(
-#       column(
-#         12,
-#         div(
-#           style = "text-align: center;",
-#           uiOutput(ns("obstacle_tiles"))
-#         )
-#       )
-#     )
-#   )
-# }
+obstaclesUI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    fluidRow(
+      column(
+        12,
+        div(
+          style = "text-align: center;",
+          actionButton(ns("add_obstacle"), "Add Obstacle")
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(
+          style = "text-align: center;",
+          uiOutput(ns("obstacle_tiles"))
+        )
+      )
+    )
+  )
+}
 
 
 
@@ -356,9 +356,9 @@ secondPage_ui <- function(id) {
           style = "background-color: white; padding: 20px; border-radius: 10px; width: 50%;",
           
           # Existing inputs for wall dimensions, tile size, etc.
-          numericInput(ns("wall_height"), "Wall Height:", value = 100, min = 100, max = 3000, width = '100%'),
-          numericInput(ns("wall_width"), "Wall Width:", value = 100, min = 100, max = 1200, width = '100%'),
-          numericInput(ns("wall_offset"), "Tile Offset:", value = 0, min = 0, max = 500, width = '100%'),
+          numericInput(ns("wall_height"), "Wall Height: (mm)", value = 100, min = 100, max = 3000, width = '100%'),
+          numericInput(ns("wall_width"), "Wall Width: (mm)", value = 100, min = 100, max = 1200, width = '100%'),
+          numericInput(ns("wall_offset"), "Tile Offset: (mm)", value = 0, min = 0, max = 500, width = '100%'),
           
           selectInput(
             ns("tile_size"),
@@ -369,7 +369,7 @@ secondPage_ui <- function(id) {
           ),
           selectInput(
             ns("wall_grout"),
-            "Tile Grout:",
+            "Tile Grout: (mm)",
             choices = c(2, 3, 4, 5, 6, 7, 8, 9, 10),
             selected = 2,
             width = '100%'
@@ -377,8 +377,7 @@ secondPage_ui <- function(id) {
           
           div(
             style = "margin-top: 20px;",
-            actionButton(ns("submit_button"), "Next", style = "width: 100%; background-color: #add8e6; color: black; margin-bottom: 10px;"),
-            actionButton(ns("back"), "Back", style = "width: 100%; background-color: #ffa500; color: white; margin-top: 10px;")
+            actionButton(ns("submit_button"), "Next", style = "width: 100%; background-color: #add8e6; color: black; margin-bottom: 10px;")
           ),
           
           # Side-by-Side Obstacle Form
@@ -392,21 +391,21 @@ secondPage_ui <- function(id) {
               ),
               column(
                 width = 4,
-                numericInput(ns("new_obstacle_width"), "Obstacle Width", value = 100, min = 1)
+                numericInput(ns("new_obstacle_width"), "Obstacle Width: (mm)", value = 100, min = 1)
               ),
               column(
                 width = 4,
-                numericInput(ns("new_obstacle_height"), "Obstacle Height", value = 100, min = 1)
+                numericInput(ns("new_obstacle_height"), "Obstacle Height: (mm)", value = 100, min = 1)
               )
             ),
             fluidRow(
               column(
                 width = 4,
-                numericInput(ns("top"), "Distance from Top", value = 50, min = 1)
+                numericInput(ns("top"), "Distance from Top: (mm)", value = 50, min = 1)
               ),
               column(
                 width = 4,
-                numericInput(ns("left"), "Distance from Left", value = 50, min = 1)
+                numericInput(ns("left"), "Distance from Left: (mm)", value = 50, min = 1)
               ),
               column(
                 width = 4,
