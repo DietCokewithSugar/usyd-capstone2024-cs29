@@ -196,6 +196,38 @@ userInput_ui <- function(id) {
 
 
 
+
+
+obstaclesUI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    fluidRow(
+      column(
+        12,
+        div(
+          style = "text-align: center;",
+          actionButton(ns("add_obstacle"), "Add Obstacle")
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        div(
+          style = "text-align: center;",
+          uiOutput(ns("obstacle_tiles"))
+        )
+      )
+    )
+  )
+}
+
+
+
+
+
+
+
 landingPage_ui <- function(id) {
   ns <- NS(id)
   
