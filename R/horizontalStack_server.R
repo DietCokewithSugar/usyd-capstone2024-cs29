@@ -16,7 +16,8 @@ horizontalStack_server <- function(
     # offset_x = 0,
     # offset_y = 0,
     full_tiles = 0,
-    split_tiles = 0
+    split_tiles = 0,
+    tile_cost_sum = 0
   )
 
   wh <- wall_height
@@ -66,8 +67,8 @@ horizontalStack_server <- function(
 
   # 调用 tileCountAndCost 模块
   tile_count_result <- tileCountAndCost(
-    box_x = offset_x,
-    box_y = offset_y,
+    box_x = 0,
+    box_y = 0,
     ww = ww,
     wh = wh,
     tile_1_list = tile_list,  # 传递你的数据
@@ -83,17 +84,17 @@ horizontalStack_server <- function(
 
 
   # 将结果存入 reactiveValues
-  full_tiles <- tile_count_result$full_tiles_1
-  split_tiles <- tile_count_result$split_tiles_1
-  tile_cost_sum <- tile_count_result$tile_cost_sum
+  values$full_tiles <- tile_count_result$full_tiles_1
+  values$split_tiles <- tile_count_result$split_tiles_1
+  values$tile_cost_sum <- tile_count_result$tile_cost_sum
 
 
 
   return(
     list(
-      full_tiles = full_tiles,
-      split_tiles = split_tiles,
-      tile_cost_sum = tile_cost_sum
+      full_tiles = values$full_tiles,
+      split_tiles = values$split_tiles,
+      tile_cost_sum = values$tile_cost_sum
     )
   )
 }

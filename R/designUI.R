@@ -368,7 +368,7 @@ secondPage_ui <- function(id) {
           selectInput(
             ns("wall_grout"),
             "Tile Grout: (mm)",
-            choices = c(2, 3, 4, 5, 6, 7, 8, 9, 10),
+            choices = c(2, 3, 4, 5, 6, 7, 80, 90, 100),
             selected = 2,
             width = '100%'
           ),

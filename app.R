@@ -11,3 +11,4 @@ source("R/finalPage_server.R")
 source("R/validation_functions.R")
 
 shinyApp(ui = ui, server = server)
+ 

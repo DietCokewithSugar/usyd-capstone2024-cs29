@@ -14,14 +14,19 @@ source("R/landingPage_server.R")
 source("R/secondPage_server.R")
 source("R/finalPage_server.R")
 source("R/validation_functions.R")
-
+source("R/horizontalStack_server.R")
+source("R/herringbone_server.R")
+source("R/basketweave_server.R")
+source("R/lattice_server.R")
+source("R/tileCountAndCost.R")
 # 导入函数
-source("functions/horizontalStack_server.R")
-source("functions/herringbone_server.R")
-source("functions/basketweave_server.R")
-source("functions/lattice_server.R")
-source("functions/tileCountAndCost.R")
+
 # ... 导入其他函数 ...
+source("OldUI/basketweave.R")
+source("OldUI/design_ui.R")
+source("OldUI/herringbone.R")
+source("OldUI/horizontalStack.R")
+source("OldUI/lattice.R")
 
 server <- function(input, output, session) {
   userInput_server_return_values <- userInput_server("userInput")
@@ -84,60 +89,60 @@ server <- function(input, output, session) {
     }
   })
 
-  # observe({
-  #   if (userInput_server_return_values$pattern_dropdown() == "Stack") {
-  #     horizontalStack_server(
-  #       id = "horizontalStack",
-  #       wall_height = userInput_server_return_values$wall_height,
-  #       wall_width = userInput_server_return_values$wall_width,
-  #       tile_height = userInput_server_return_values$tile_height,
-  #       tile_width = userInput_server_return_values$tile_width,
-  #       tile_spacing = userInput_server_return_values$tile_spacing,
-  #       offset = userInput_server_return_values$offset,
-  #       tile_color = userInput_server_return_values$tile_color,
-  #       texture_option = userInput_server_return_values$texture_option,
-  #       obstacles = obstaclesServer_return_values
-  #     )
-  #   } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
-  #     herringbone_server(
-  #       id = "herringbone",
-  #       wall_height = userInput_server_return_values$wall_height,
-  #       wall_width = userInput_server_return_values$wall_width,
-  #       tile_height = userInput_server_return_values$tile_height,
-  #       tile_width = userInput_server_return_values$tile_width,
-  #       tile_spacing = userInput_server_return_values$tile_spacing,
-  #       tile_color = userInput_server_return_values$tile_color,
-  #       tile_color_2 = userInput_server_return_values$tile_color_2,
-  #       obstacles = obstaclesServer_return_values,
-  #       input_session = userInput_server_return_values$session
-  #     )
-  #   } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-  #     basketweave_server(
-  #       id = "basketweave",
-  #       wall_height = userInput_server_return_values$wall_height,
-  #       wall_width = userInput_server_return_values$wall_width,
-  #       tile_height = userInput_server_return_values$tile_height,
-  #       tile_width = userInput_server_return_values$tile_width,
-  #       tile_spacing = userInput_server_return_values$tile_spacing,
-  #       tile_color = userInput_server_return_values$tile_color,
-  #       tile_color_2 = userInput_server_return_values$tile_color_2,
-  #       obstacles = obstaclesServer_return_values
-  #     )
-  #   } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
-  #     lattice_server(
-  #       id = "lattice",
-  #       wall_height = userInput_server_return_values$wall_height,
-  #       wall_width = userInput_server_return_values$wall_width,
-  #       tile_height = userInput_server_return_values$tile_height,
-  #       tile_spacing = userInput_server_return_values$tile_spacing,
-  #       tile_color = userInput_server_return_values$tile_color,
-  #       tile_color_2 = userInput_server_return_values$tile_color_2,
-  #       obstacles = obstaclesServer_return_values
-  #     )
-  #   } else {
-  #     # other_module_server("otherModule", ...)  # Assuming other module server is defined
-  #   }
-  # })
+  observe({
+    if (userInput_server_return_values$pattern_dropdown() == "Stack") {
+      old_horizontalStack_server(
+        id = "horizontalStack",
+        wall_height = userInput_server_return_values$wall_height,
+        wall_width = userInput_server_return_values$wall_width,
+        tile_height = userInput_server_return_values$tile_height,
+        tile_width = userInput_server_return_values$tile_width,
+        tile_spacing = userInput_server_return_values$tile_spacing,
+        offset = userInput_server_return_values$offset,
+        tile_color = userInput_server_return_values$tile_color,
+        texture_option = userInput_server_return_values$texture_option,
+        obstacles = obstaclesServer_return_values
+      )
+    } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
+      old_herringbone_server(
+        id = "herringbone",
+        wall_height = userInput_server_return_values$wall_height,
+        wall_width = userInput_server_return_values$wall_width,
+        tile_height = userInput_server_return_values$tile_height,
+        tile_width = userInput_server_return_values$tile_width,
+        tile_spacing = userInput_server_return_values$tile_spacing,
+        tile_color = userInput_server_return_values$tile_color,
+        tile_color_2 = userInput_server_return_values$tile_color_2,
+        obstacles = obstaclesServer_return_values,
+        input_session = userInput_server_return_values$session
+      )
+    } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
+      old_basketweave_server(
+        id = "basketweave",
+        wall_height = userInput_server_return_values$wall_height,
+        wall_width = userInput_server_return_values$wall_width,
+        tile_height = userInput_server_return_values$tile_height,
+        tile_width = userInput_server_return_values$tile_width,
+        tile_spacing = userInput_server_return_values$tile_spacing,
+        tile_color = userInput_server_return_values$tile_color,
+        tile_color_2 = userInput_server_return_values$tile_color_2,
+        obstacles = obstaclesServer_return_values
+      )
+    } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
+      old_lattice_server(
+        id = "lattice",
+        wall_height = userInput_server_return_values$wall_height,
+        wall_width = userInput_server_return_values$wall_width,
+        tile_height = userInput_server_return_values$tile_height,
+        tile_spacing = userInput_server_return_values$tile_spacing,
+        tile_color = userInput_server_return_values$tile_color,
+        tile_color_2 = userInput_server_return_values$tile_color_2,
+        obstacles = obstaclesServer_return_values
+      )
+    } else {
+      # other_module_server("otherModule", ...)  # Assuming other module server is defined
+    }
+  })
 
 
 

@@ -1,14 +1,15 @@
-herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_width, tile_spacing, tile_color, tile_color_2, obstacles, input_session) {
+old_herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_width, tile_spacing, tile_color, tile_color_2, obstacles, input_session) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Define ns inside the moduleServer function
     values <- reactiveValues(
       box_x = 0,
       box_y = 0,
       offset_x = 0,
-      offset_y = 0
+      offset_y = 0,
+      full_tiles = 0,
+      split_tiles = 0,
+      tile_cost_sum = 0,
     )
-
-
 
     observeEvent(input$up, {
       values$offset_y <- values$offset_y - 1  # Move box up
@@ -32,9 +33,6 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
     })
 
 
-
-
-
     output$dynamicWallPlot <- renderUI({
       plotOutput(ns("wallPlot"), height = paste0(wall_height(), "px"), width = paste0(wall_width(), "px"))
     })
@@ -42,6 +40,9 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
     output$wallPlot <- renderPlot({
       wh <- wall_height()
       ww <- wall_width()
+      # wox <- wall_offset_x()
+      # woy <- wall_offset_y()
+      # ws <- wall_spacing()
       th <- tile_height()  # Assume height is shorter dimension for horizontal tiles
       tw <- tile_width()   # Assume width is longer dimension for horizontal tiles
       ts <- tile_spacing()
@@ -61,9 +62,9 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
       updateSliderInput(session, ns("tile_width"), value = values$tile_width)
       updateNumericInput(session, ns("tile_width_num"), value = values$tile_width)
 
-
       tile_list <- list()
-
+      full_tiles <- 0
+      split_tiles <- 0
 
       # base point on top left
       draw_horizontal_tile <- function(x, y) {
@@ -97,6 +98,7 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
       }
 
 
+
       x_position <- -(tw + th + ts) + values$offset_x
       y_position <- wh + tw + th + ts + values$offset_y
 
@@ -128,6 +130,8 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
         y_position <- y_position - th - ts
       }
 
+
+
       observe({
         # 调用 tileCountAndCost 模块
         tile_count_result <- tileCountAndCost(
@@ -152,6 +156,8 @@ herringbone_server <- function(id, wall_height, wall_width, tile_height, tile_wi
         values$split_tiles <- tile_count_result$split_tiles_1
         values$tile_cost_sum <- tile_count_result$tile_cost_sum
       })
+
+
 
       polygon(
         c(

@@ -6,8 +6,11 @@ finalPage_server <- function(id, input_data, switch_ui) {
       offset_y = 0,
       full_tiles = 0,
       split_tiles = 0,
+      tile_cost_sum = 0,
       tile_color = "#ADD8E6"
     )
+
+
 
     # Get adjusted dimensions and store in values
     adjusted_dims <- calculate_adjusted_dimensions(input_data, session)
@@ -19,7 +22,7 @@ finalPage_server <- function(id, input_data, switch_ui) {
 
     # Set up movement controls
     setup_movement_controls(input, values, function() {
-      recalculate_tiles(input_data, values)
+      # recalculate_tiles(input_data, values)
     })
 
     # Observe tile color change
@@ -32,11 +35,14 @@ finalPage_server <- function(id, input_data, switch_ui) {
     output$dynamicWallPlot <- renderUI({
       plotOutput(ns("wallPlot"), height = "60vh", width = "60vw")
     })
-
-    # Render the tile grid and recalculate the tile counts
+    # pattern_result <- NULL
+      # Render the tile grid and recalculate the tile counts
     output$wallPlot <- renderPlot({
-      draw_tiles_and_box(input_data, values)
-      recalculate_tiles(input_data, values)
+      pattern_result <- draw_tiles_and_box(input_data, values)
+      values$full_tiles <- pattern_result$full_tiles
+      values$split_tiles <- pattern_result$split_tiles
+      values$tile_cost_sum <- pattern_result$tile_cost_sum
+      # recalculate_tiles(input_data, values)
     })
 
     output$download_plot <- downloadHandler(
@@ -61,8 +67,6 @@ finalPage_server <- function(id, input_data, switch_ui) {
         )
 
         # 使用 isolate() 获取 reactiveValues 值
-        full_tiles <- isolate(values$full_tiles)
-        split_tiles <- isolate(values$split_tiles)
         adjusted_ww <- isolate(values$adjusted_ww)
         adjusted_wh <- isolate(values$adjusted_wh)
         adjusted_tw <- isolate(values$adjusted_tw)
@@ -118,78 +122,6 @@ finalPage_server <- function(id, input_data, switch_ui) {
         colnames(wall_tile_details) <- NULL
         wall_tile_table_grob <- gridExtra::tableGrob(wall_tile_details, rows = NULL)
 
-        # 定义 draw_tiles_and_box() 函数
-        # draw_tiles_and_box <- function() {
-        #   # 设置绘图窗口
-        #   plot.new()
-        #   plot.window(
-        #     xlim = c(0, adjusted_ww),
-        #     ylim = c(0, adjusted_wh),
-        #     asp = adjusted_ww / adjusted_wh
-        #   )
-        #
-        #   # 绘制瓷砖
-        #   y_position <- offset_y
-        #   row_counter <- 1
-        #   while (y_position < adjusted_wh + 100) {
-        #     x_position <- offset_x + ifelse(row_counter %% 2 == 0, wall_offset * scale_factor, 0)
-        #     while (x_position < adjusted_ww + 100) {
-        #       # 绘制每块瓷砖
-        #       polygon(
-        #         c(
-        #           x_position,
-        #           x_position,
-        #           x_position + adjusted_tw,
-        #           x_position + adjusted_tw
-        #         ),
-        #         c(
-        #           y_position,
-        #           y_position + adjusted_th,
-        #           y_position + adjusted_th,
-        #           y_position
-        #         ),
-        #         col = tile_color,
-        #         border = "black"
-        #       )
-        #
-        #       # 移动到下一个瓷砖
-        #       x_position <- x_position + adjusted_tw + wall_grout * scale_factor
-        #     }
-        #     y_position <- y_position + adjusted_th + wall_grout * scale_factor
-        #     row_counter <- row_counter + 1
-        #   }
-        #
-        #   # 绘制墙壁边框
-        #   rect(
-        #     0,
-        #     0,
-        #     adjusted_ww,
-        #     adjusted_wh,
-        #     border = "red",
-        #     lwd = 3
-        #   )
-        #
-        #   # 绘制障碍物
-        #   if (!is.null(obstacles_data) && length(obstacles_data) > 0) {
-        #     for (obstacle in obstacles_data) {
-        #       obstacle_top <- as.numeric(obstacle$top) * scale_factor
-        #       obstacle_left <- as.numeric(obstacle$left) * scale_factor
-        #       obstacle_width <- as.numeric(obstacle$width) * scale_factor
-        #       obstacle_height <- as.numeric(obstacle$height) * scale_factor
-        #
-        #       rect(
-        #         obstacle_left,
-        #         adjusted_wh - obstacle_top,
-        #         obstacle_left + obstacle_width,
-        #         adjusted_wh - obstacle_top - obstacle_height,
-        #         col = "orange",
-        #         border = "black",
-        #         lwd = 2
-        #       )
-        #     }
-        #   }
-        # }
-
         # 定义 wall_plot() 函数
         wall_plot <- function() {
           par(mar = c(4, 4, 4, 4))
@@ -231,6 +163,7 @@ finalPage_server <- function(id, input_data, switch_ui) {
         dev.off()
       }
     )
+
 
     # Render tile counts
     output$fullTileCount <- renderText({
@@ -281,7 +214,7 @@ calculate_adjusted_dimensions <- function(input_data, session) {
   # th <- th
   # tw <- th
 
-  tw <- th  # Assuming square tiles
+  tw <- th * 2  # Assuming square tiles
 
   max_height <- 0.9 * session$clientData$output_wallPlot_height
   max_width <- 0.9 * session$clientData$output_wallPlot_width
@@ -441,18 +374,18 @@ draw_tiles_and_box <- function(input_data, values) {
     ylim = c(0, values$adjusted_wh),
     asp = values$adjusted_ww / values$adjusted_wh
   )
-  pattern_result <- horizontalStack_server(
-    id = "horizontalStack",
-    wall_height = values$adjusted_wh,
-    wall_width = values$adjusted_ww,
-    tile_height = values$adjusted_th,
-    tile_width = values$adjusted_tw,
-    tile_spacing = (wall_grout*values$scale_factor),
-    offset = (wall_offset*values$scale_factor),
-    tile_color = values$tile_color,
-    offset_x = values$offset_x,
-    offset_y = values$offset_y
-  )
+  # pattern_result <- horizontalStack_server(
+  #   id = "horizontalStack",
+  #   wall_height = values$adjusted_wh,
+  #   wall_width = values$adjusted_ww,
+  #   tile_height = values$adjusted_th,
+  #   tile_width = values$adjusted_tw,
+  #   tile_spacing = (wall_grout*values$scale_factor),
+  #   offset = (wall_offset*values$scale_factor),
+  #   tile_color = values$tile_color,
+  #   offset_x = values$offset_x,
+  #   offset_y = values$offset_y
+  # )
 
   # Draw the tiles across the wall area with offsets
   # {
@@ -490,54 +423,56 @@ draw_tiles_and_box <- function(input_data, values) {
   #   }
   # }
 
-  # if (userInput_server_return_values$pattern_dropdown() == "Stack") {
-  #   horizontalStack_server(
-  #     id = "horizontalStack",
-  #     wall_height = values$adjusted_wh,
-  #     wall_width = values$adjusted_ww,
-  #     tile_height = values$adjusted_th,
-  #     tile_width = values$adjusted_tw,
-  #     tile_spacing = wall_grout,
-  #     offset = wall_offset * values$scale_factor,
-  #     tile_color = values$tile_color,
-  #     offset_x = values$offset_x,
-  #     offset_y = values$offset_y,
-  #   )
-  # } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
-  #   herringbone_server(
-  #     id = "herringbone",
-  #     wall_height = userInput_server_return_values$wall_height,
-  #     wall_width = userInput_server_return_values$wall_width,
-  #     tile_height = userInput_server_return_values$tile_height,
-  #     tile_width = userInput_server_return_values$tile_width,
-  #     tile_spacing = userInput_server_return_values$tile_spacing,
-  #     tile_color = userInput_server_return_values$tile_color,
-  #     tile_color_2 = userInput_server_return_values$tile_color_2,
-  #   )
-  # } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-  #   basketweave_server(
-  #     id = "basketweave",
-  #     wall_height = userInput_server_return_values$wall_height,
-  #     wall_width = userInput_server_return_values$wall_width,
-  #     tile_height = userInput_server_return_values$tile_height,
-  #     tile_width = userInput_server_return_values$tile_width,
-  #     tile_spacing = userInput_server_return_values$tile_spacing,
-  #     tile_color = userInput_server_return_values$tile_color,
-  #     tile_color_2 = userInput_server_return_values$tile_color_2,
-  #   )
-  # } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
-  #   lattice_server(
-  #     id = "lattice",
-  #     wall_height = userInput_server_return_values$wall_height,
-  #     wall_width = userInput_server_return_values$wall_width,
-  #     tile_height = userInput_server_return_values$tile_height,
-  #     tile_spacing = userInput_server_return_values$tile_spacing,
-  #     tile_color = userInput_server_return_values$tile_color,
-  #     tile_color_2 = userInput_server_return_values$tile_color_2,
-  #   )
-  # }
+  if (input_data$layout_option == "Stack") {
+    pattern_result <- horizontalStack_server(
+      id = "horizontalStack",
+      wall_height = values$adjusted_wh,
+      wall_width = values$adjusted_ww,
+      tile_height = values$adjusted_th,
+      tile_width = values$adjusted_tw,
+      tile_spacing = (wall_grout*values$scale_factor),
+      offset = (wall_offset*values$scale_factor),
+      tile_color = values$tile_color,
+      offset_x = values$offset_x,
+      offset_y = values$offset_y
+    )
+  } else if (input_data$layout_option == "Herringbone") {
+    pattern_result <- herringbone_server(
+      id = "herringbone",
+      wall_height = values$adjusted_wh,
+      wall_width = values$adjusted_ww,
+      tile_height = values$adjusted_th,
+      tile_width = values$adjusted_tw,
+      tile_spacing = (wall_grout*values$scale_factor),
+      tile_color = values$tile_color,
+      offset_x = values$offset_x,
+      offset_y = values$offset_y
+    )
+  } else if (input_data$layout_option == "Basketweave") {
+    pattern_result <- basketweave_server(
+      id = "basketweave",
+      wall_height = values$adjusted_wh,
+      wall_width = values$adjusted_ww,
+      tile_height = values$adjusted_th,
+      tile_spacing = (wall_grout*values$scale_factor),
+      tile_color = values$tile_color,
+      offset_x = values$offset_x,
+      offset_y = values$offset_y
+    )
+  } else if (input_data$layout_option == "Lattice") {
+    pattern_result <- lattice_server(
+      id = "lattice",
+      wall_height = values$adjusted_wh,
+      wall_width = values$adjusted_ww,
+      tile_height = values$adjusted_th,
+      tile_spacing = (wall_grout*values$scale_factor),
+      tile_color = values$tile_color,
+      offset_x = values$offset_x,
+      offset_y = values$offset_y
+    )
+  }
 
-
+  cat()
 
 
   # Draw the red wall boundary
@@ -574,4 +509,16 @@ draw_tiles_and_box <- function(input_data, values) {
       )
     }
   }
+
+  # cat(pattern_result$full_tiles,"\n")
+  # cat(pattern_result$split_tiles,"\n")
+  # cat(pattern_result$tile_cost_sum,"\n")
+
+  return(
+    list(
+      full_tiles = pattern_result$full_tiles,
+      split_tiles = pattern_result$split_tiles,
+      tile_cost_sum = pattern_result$tile_cost_sum
+    )
+  )
 }
