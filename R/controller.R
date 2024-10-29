@@ -891,24 +891,39 @@ finalPage_server <- function(id, input_data, switch_ui) {
         paste("wall-plot", Sys.Date(), ".png", sep = "")
       },
       content = function(file) {
-        png(file, width = 800, height = 1200)  # Set dimensions for the image to include both tables
-        
-        # Create a function to draw the wall plot (red box, tiles, obstacles)
-        wall_plot <- function() {
-          par(mar = c(4, 4, 4, 4)) 
-          draw_tiles_and_box()  # Call your existing function to draw the wall plot
-        }
-        
-        # Safely handle switch cases and return default tile size if input_data$tile_size is invalid
+        # 确保正确获取 tile_size_value
         tile_size_value <- switch(
           input_data$tile_size,
-          "30x30" = 30,
           "50x50" = 50,
-          "70x70" = 70,
-          30  # Default value in case tile_size is invalid or not provided
+          "75x75" = 75,
+          "100x100" = 100,
+          "150x150" = 150,
+          "200x200" = 200,
+          "300x300" = 300,
+          "400x400" = 400,
+          "450x450" = 450,
+          "600x600" = 600,
+          "900x900" = 900,
+          50  # 默认值
         )
-        
-        # Create a table with wall and tile data
+
+        # 使用 isolate() 获取 reactiveValues 值
+        full_tiles <- isolate(values$full_tiles)
+        split_tiles <- isolate(values$split_tiles)
+        adjusted_ww <- isolate(values$adjusted_ww)
+        adjusted_wh <- isolate(values$adjusted_wh)
+        adjusted_tw <- isolate(values$adjusted_tw)
+        adjusted_th <- isolate(values$adjusted_th)
+        scale_factor <- isolate(values$scale_factor)
+        offset_x <- isolate(values$offset_x)
+        offset_y <- isolate(values$offset_y)
+        tile_color <- isolate(values$tile_color)
+        # 从 input_data 中获取必要的数据
+        wall_offset <- as.numeric(input_data$wall_offset)
+        wall_grout <- as.numeric(input_data$wall_grout)
+        obstacles_data <- input_data$obstacles
+
+        # 创建 wall_and_tile_details 数据框
         wall_tile_details <- data.frame(
           Parameter = c(
             "Wall Height",
@@ -921,19 +936,18 @@ finalPage_server <- function(id, input_data, switch_ui) {
           Value = c(
             input_data$wall_height,
             input_data$wall_width,
-            tile_size_value,  # Use the resolved tile size for both height and width
             tile_size_value,
-            values$full_tiles,
-            values$split_tiles
+            tile_size_value,
+            full_tiles,
+            split_tiles
           )
         )
-        
-        # Check if there are any obstacles before creating the obstacle table
-        if (length(input_data$obstacles) > 0) {
-          # Create a table with obstacle details
+
+        # 准备障碍物数据
+        if (!is.null(obstacles_data) && length(obstacles_data) > 0) {
           obstacle_details <- data.frame(
-            Parameter = paste0("Obstacle ", seq_along(input_data$obstacles)),
-            Value = sapply(input_data$obstacles, function(ob)
+            Parameter = paste0("Obstacle ", seq_along(obstacles_data)),
+            Value = sapply(obstacles_data, function(ob)
               paste0(
                 "Top: ", ob$top,
                 ", Left: ", ob$left,
@@ -941,45 +955,126 @@ finalPage_server <- function(id, input_data, switch_ui) {
                 ", Height: ", ob$height
               ))
           )
-          
-          # Remove column names (headers) for the tables
-          colnames(wall_tile_details) <- NULL
           colnames(obstacle_details) <- NULL
-          
-          # Convert the tables to grobs (graphical objects) without headers
-          wall_tile_table_grob <- tableGrob(wall_tile_details, rows = NULL)  # Wall and tile table
-          obstacle_table_grob <- tableGrob(obstacle_details, rows = NULL)    # Obstacle table
+          obstacle_table_grob <- gridExtra::tableGrob(obstacle_details, rows = NULL)
         } else {
-          # If there are no obstacles, create a message instead of an obstacle table
-          obstacle_table_grob <- textGrob("No obstacles", gp = gpar(fontsize = 12, col = "red"))
-          
-          # Remove column names (headers) for the wall tile table
-          colnames(wall_tile_details) <- NULL
-          wall_tile_table_grob <- tableGrob(wall_tile_details, rows = NULL)  # Wall and tile table
+          obstacle_table_grob <- grid::textGrob("No obstacles", gp = grid::gpar(fontsize = 12, col = "red"))
         }
-        
-        # Save the image as PNG
-        png(file, width = 800, height = 1200)  # Increase height to include plot and both tables
-        
-        # Split the image space into three parts: one for the plot, one for the wall/tile table, and one for the obstacle table
+
+        # 移除 wall_tile_details 的列名
+        colnames(wall_tile_details) <- NULL
+        wall_tile_table_grob <- gridExtra::tableGrob(wall_tile_details, rows = NULL)
+
+        # 定义 draw_tiles_and_box() 函数
+        draw_tiles_and_box <- function() {
+          # 设置绘图窗口
+          plot.new()
+          plot.window(
+            xlim = c(0, adjusted_ww),
+            ylim = c(0, adjusted_wh),
+            asp = adjusted_ww / adjusted_wh
+          )
+
+          # 绘制瓷砖
+          y_position <- offset_y
+          row_counter <- 1
+          while (y_position < adjusted_wh + 100) {
+            x_position <- offset_x + ifelse(row_counter %% 2 == 0, wall_offset * scale_factor, 0)
+            while (x_position < adjusted_ww + 100) {
+              # 绘制每块瓷砖
+              polygon(
+                c(
+                  x_position,
+                  x_position,
+                  x_position + adjusted_tw,
+                  x_position + adjusted_tw
+                ),
+                c(
+                  y_position,
+                  y_position + adjusted_th,
+                  y_position + adjusted_th,
+                  y_position
+                ),
+                col = tile_color,
+                border = "black"
+              )
+
+              # 移动到下一个瓷砖
+              x_position <- x_position + adjusted_tw + wall_grout * scale_factor
+            }
+            y_position <- y_position + adjusted_th + wall_grout * scale_factor
+            row_counter <- row_counter + 1
+          }
+
+          # 绘制墙壁边框
+          rect(
+            0,
+            0,
+            adjusted_ww,
+            adjusted_wh,
+            border = "red",
+            lwd = 3
+          )
+
+          # 绘制障碍物
+          if (!is.null(obstacles_data) && length(obstacles_data) > 0) {
+            for (obstacle in obstacles_data) {
+              obstacle_top <- as.numeric(obstacle$top) * scale_factor
+              obstacle_left <- as.numeric(obstacle$left) * scale_factor
+              obstacle_width <- as.numeric(obstacle$width) * scale_factor
+              obstacle_height <- as.numeric(obstacle$height) * scale_factor
+
+              rect(
+                obstacle_left,
+                adjusted_wh - obstacle_top,
+                obstacle_left + obstacle_width,
+                adjusted_wh - obstacle_top - obstacle_height,
+                col = "orange",
+                border = "black",
+                lwd = 2
+              )
+            }
+          }
+        }
+
+        # 定义 wall_plot() 函数
+        wall_plot <- function() {
+          par(mar = c(4, 4, 4, 4))
+          draw_tiles_and_box()
+        }
+
+        # 打开图形设备
+        png(file, width = 800, height = 1200)
+
+        # 设置布局
         grid.newpage()
-        pushViewport(viewport(layout = grid.layout(3, 1)))  # 3 rows, 1 column layout
-        
-        # Row 1: Base R plot (tiles, red box, obstacles)
-        pushViewport(viewport(layout.pos.row = 1))
-        wall_plot()  # Plot the wall tiles, red box, and obstacles
+        pushViewport(viewport(layout = grid.layout(3, 1)))
+
+        # 加载所需库
+        library(grid)
+        library(gridBase)
+        library(gridExtra)
+
+        # 绘制第一个视图（墙壁绘图）
+        vp1 <- viewport(layout.pos.row = 1)
+        pushViewport(vp1)
+        par(new = TRUE, fig = gridFIG())
+        wall_plot()
         popViewport()
-        
-        # Row 2: Wall and tile table
-        pushViewport(viewport(layout.pos.row = 2))
-        grid.draw(wall_tile_table_grob)  # Draw the wall and tile table below the plot
+
+        # 绘制第二个视图（墙壁和瓷砖表格）
+        vp2 <- viewport(layout.pos.row = 2)
+        pushViewport(vp2)
+        grid.draw(wall_tile_table_grob)
         popViewport()
-        
-        # Row 3: Obstacle table or "No obstacles" message
-        pushViewport(viewport(layout.pos.row = 3))
-        grid.draw(obstacle_table_grob)  # Draw the obstacle table or the message
+
+        # 绘制第三个视图（障碍物表格或消息）
+        vp3 <- viewport(layout.pos.row = 3)
+        pushViewport(vp3)
+        grid.draw(obstacle_table_grob)
         popViewport()
-        
+
+        # 关闭图形设备
         dev.off()
       }
     )
