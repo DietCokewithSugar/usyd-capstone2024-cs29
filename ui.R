@@ -1,6 +1,7 @@
 library(shiny)
 library(jpeg)
 source("R/designUI.R")
+source("functions/design_ui.R")
 
 ui <- navbarPage(
   id = "navbar",

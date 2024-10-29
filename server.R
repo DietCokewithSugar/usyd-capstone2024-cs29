@@ -5,6 +5,13 @@ source("R/controller.R")
 source("R/pattern.R")
 source("R/designUI.R")
 
+# 导入函数
+source("functions/herringboneModule.R")
+source("functions/horizontalStack_server.R")
+source("functions/basketweave_server.R")
+source("functions/lattice_server.R")
+# ... 导入其他函数 ...
+
 server <- function(input, output, session) {
   herringbone_sv <- reactiveValues(tile_width = 40, tile_height = 20, tile_ratio = 2, input_type = NULL)
   userInput_server_return_values <- userInput_server("userInput", herringbone_sv)
@@ -82,8 +89,7 @@ server <- function(input, output, session) {
         obstacles = obstaclesServer_return_values
       )
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
-      cat("height: ",herringbone_sv$tile_height, "width: ",herringbone_sv$tile_width, "ratio: ",herringbone_sv$tile_ratio, "type: ",herringbone_sv$input_type, "\n")
-      herringbone_server(
+      herringboneModule(
         id = "herringbone",
         wall_height = userInput_server_return_values$wall_height,
         wall_width = userInput_server_return_values$wall_width,
