@@ -84,60 +84,60 @@ server <- function(input, output, session) {
     }
   })
 
-  observe({
-    if (userInput_server_return_values$pattern_dropdown() == "Stack") {
-      horizontalStack_server(
-        id = "horizontalStack",
-        wall_height = userInput_server_return_values$wall_height,
-        wall_width = userInput_server_return_values$wall_width,
-        tile_height = userInput_server_return_values$tile_height,
-        tile_width = userInput_server_return_values$tile_width,
-        tile_spacing = userInput_server_return_values$tile_spacing,
-        offset = userInput_server_return_values$offset,
-        tile_color = userInput_server_return_values$tile_color,
-        texture_option = userInput_server_return_values$texture_option,
-        obstacles = obstaclesServer_return_values
-      )
-    } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
-      herringbone_server(
-        id = "herringbone",
-        wall_height = userInput_server_return_values$wall_height,
-        wall_width = userInput_server_return_values$wall_width,
-        tile_height = userInput_server_return_values$tile_height,
-        tile_width = userInput_server_return_values$tile_width,
-        tile_spacing = userInput_server_return_values$tile_spacing,
-        tile_color = userInput_server_return_values$tile_color,
-        tile_color_2 = userInput_server_return_values$tile_color_2,
-        obstacles = obstaclesServer_return_values,
-        input_session = userInput_server_return_values$session
-      )
-    } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
-      basketweave_server(
-        id = "basketweave",
-        wall_height = userInput_server_return_values$wall_height,
-        wall_width = userInput_server_return_values$wall_width,
-        tile_height = userInput_server_return_values$tile_height,
-        tile_width = userInput_server_return_values$tile_width,
-        tile_spacing = userInput_server_return_values$tile_spacing,
-        tile_color = userInput_server_return_values$tile_color,
-        tile_color_2 = userInput_server_return_values$tile_color_2,
-        obstacles = obstaclesServer_return_values
-      )
-    } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
-      lattice_server(
-        id = "lattice",
-        wall_height = userInput_server_return_values$wall_height,
-        wall_width = userInput_server_return_values$wall_width,
-        tile_height = userInput_server_return_values$tile_height,
-        tile_spacing = userInput_server_return_values$tile_spacing,
-        tile_color = userInput_server_return_values$tile_color,
-        tile_color_2 = userInput_server_return_values$tile_color_2,
-        obstacles = obstaclesServer_return_values
-      )
-    } else {
-      # other_module_server("otherModule", ...)  # Assuming other module server is defined
-    }
-  })
+  # observe({
+  #   if (userInput_server_return_values$pattern_dropdown() == "Stack") {
+  #     horizontalStack_server(
+  #       id = "horizontalStack",
+  #       wall_height = userInput_server_return_values$wall_height,
+  #       wall_width = userInput_server_return_values$wall_width,
+  #       tile_height = userInput_server_return_values$tile_height,
+  #       tile_width = userInput_server_return_values$tile_width,
+  #       tile_spacing = userInput_server_return_values$tile_spacing,
+  #       offset = userInput_server_return_values$offset,
+  #       tile_color = userInput_server_return_values$tile_color,
+  #       texture_option = userInput_server_return_values$texture_option,
+  #       obstacles = obstaclesServer_return_values
+  #     )
+  #   } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
+  #     herringbone_server(
+  #       id = "herringbone",
+  #       wall_height = userInput_server_return_values$wall_height,
+  #       wall_width = userInput_server_return_values$wall_width,
+  #       tile_height = userInput_server_return_values$tile_height,
+  #       tile_width = userInput_server_return_values$tile_width,
+  #       tile_spacing = userInput_server_return_values$tile_spacing,
+  #       tile_color = userInput_server_return_values$tile_color,
+  #       tile_color_2 = userInput_server_return_values$tile_color_2,
+  #       obstacles = obstaclesServer_return_values,
+  #       input_session = userInput_server_return_values$session
+  #     )
+  #   } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
+  #     basketweave_server(
+  #       id = "basketweave",
+  #       wall_height = userInput_server_return_values$wall_height,
+  #       wall_width = userInput_server_return_values$wall_width,
+  #       tile_height = userInput_server_return_values$tile_height,
+  #       tile_width = userInput_server_return_values$tile_width,
+  #       tile_spacing = userInput_server_return_values$tile_spacing,
+  #       tile_color = userInput_server_return_values$tile_color,
+  #       tile_color_2 = userInput_server_return_values$tile_color_2,
+  #       obstacles = obstaclesServer_return_values
+  #     )
+  #   } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
+  #     lattice_server(
+  #       id = "lattice",
+  #       wall_height = userInput_server_return_values$wall_height,
+  #       wall_width = userInput_server_return_values$wall_width,
+  #       tile_height = userInput_server_return_values$tile_height,
+  #       tile_spacing = userInput_server_return_values$tile_spacing,
+  #       tile_color = userInput_server_return_values$tile_color,
+  #       tile_color_2 = userInput_server_return_values$tile_color_2,
+  #       obstacles = obstaclesServer_return_values
+  #     )
+  #   } else {
+  #     # other_module_server("otherModule", ...)  # Assuming other module server is defined
+  #   }
+  # })
 
 
 

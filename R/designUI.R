@@ -491,7 +491,8 @@ finalPage_ui <- function(id) {
       div(
         class = "tile-count-container",
         div(class = "tile-count", textOutput(ns("fullTileCount"))),
-        div(class = "tile-count", textOutput(ns("splitTileCount")))
+        div(class = "tile-count", textOutput(ns("splitTileCount"))),
+        div(class = "tile-count", textOutput(ns("tileCostSum"))),
       ),
       
       # Arrow buttons and controls at the bottom

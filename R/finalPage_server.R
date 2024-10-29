@@ -119,76 +119,76 @@ finalPage_server <- function(id, input_data, switch_ui) {
         wall_tile_table_grob <- gridExtra::tableGrob(wall_tile_details, rows = NULL)
 
         # 定义 draw_tiles_and_box() 函数
-        draw_tiles_and_box <- function() {
-          # 设置绘图窗口
-          plot.new()
-          plot.window(
-            xlim = c(0, adjusted_ww),
-            ylim = c(0, adjusted_wh),
-            asp = adjusted_ww / adjusted_wh
-          )
-
-          # 绘制瓷砖
-          y_position <- offset_y
-          row_counter <- 1
-          while (y_position < adjusted_wh + 100) {
-            x_position <- offset_x + ifelse(row_counter %% 2 == 0, wall_offset * scale_factor, 0)
-            while (x_position < adjusted_ww + 100) {
-              # 绘制每块瓷砖
-              polygon(
-                c(
-                  x_position,
-                  x_position,
-                  x_position + adjusted_tw,
-                  x_position + adjusted_tw
-                ),
-                c(
-                  y_position,
-                  y_position + adjusted_th,
-                  y_position + adjusted_th,
-                  y_position
-                ),
-                col = tile_color,
-                border = "black"
-              )
-
-              # 移动到下一个瓷砖
-              x_position <- x_position + adjusted_tw + wall_grout * scale_factor
-            }
-            y_position <- y_position + adjusted_th + wall_grout * scale_factor
-            row_counter <- row_counter + 1
-          }
-
-          # 绘制墙壁边框
-          rect(
-            0,
-            0,
-            adjusted_ww,
-            adjusted_wh,
-            border = "red",
-            lwd = 3
-          )
-
-          # 绘制障碍物
-          if (!is.null(obstacles_data) && length(obstacles_data) > 0) {
-            for (obstacle in obstacles_data) {
-              obstacle_top <- as.numeric(obstacle$top) * scale_factor
-              obstacle_left <- as.numeric(obstacle$left) * scale_factor
-              obstacle_width <- as.numeric(obstacle$width) * scale_factor
-              obstacle_height <- as.numeric(obstacle$height) * scale_factor
-
-              rect(
-                obstacle_left,
-                adjusted_wh - obstacle_top,
-                obstacle_left + obstacle_width,
-                adjusted_wh - obstacle_top - obstacle_height,
-                col = "orange",
-                border = "black",
-                lwd = 2
-              )
-            }
-          }
-        }
+        # draw_tiles_and_box <- function() {
+        #   # 设置绘图窗口
+        #   plot.new()
+        #   plot.window(
+        #     xlim = c(0, adjusted_ww),
+        #     ylim = c(0, adjusted_wh),
+        #     asp = adjusted_ww / adjusted_wh
+        #   )
+        #
+        #   # 绘制瓷砖
+        #   y_position <- offset_y
+        #   row_counter <- 1
+        #   while (y_position < adjusted_wh + 100) {
+        #     x_position <- offset_x + ifelse(row_counter %% 2 == 0, wall_offset * scale_factor, 0)
+        #     while (x_position < adjusted_ww + 100) {
+        #       # 绘制每块瓷砖
+        #       polygon(
+        #         c(
+        #           x_position,
+        #           x_position,
+        #           x_position + adjusted_tw,
+        #           x_position + adjusted_tw
+        #         ),
+        #         c(
+        #           y_position,
+        #           y_position + adjusted_th,
+        #           y_position + adjusted_th,
+        #           y_position
+        #         ),
+        #         col = tile_color,
+        #         border = "black"
+        #       )
+        #
+        #       # 移动到下一个瓷砖
+        #       x_position <- x_position + adjusted_tw + wall_grout * scale_factor
+        #     }
+        #     y_position <- y_position + adjusted_th + wall_grout * scale_factor
+        #     row_counter <- row_counter + 1
+        #   }
+        #
+        #   # 绘制墙壁边框
+        #   rect(
+        #     0,
+        #     0,
+        #     adjusted_ww,
+        #     adjusted_wh,
+        #     border = "red",
+        #     lwd = 3
+        #   )
+        #
+        #   # 绘制障碍物
+        #   if (!is.null(obstacles_data) && length(obstacles_data) > 0) {
+        #     for (obstacle in obstacles_data) {
+        #       obstacle_top <- as.numeric(obstacle$top) * scale_factor
+        #       obstacle_left <- as.numeric(obstacle$left) * scale_factor
+        #       obstacle_width <- as.numeric(obstacle$width) * scale_factor
+        #       obstacle_height <- as.numeric(obstacle$height) * scale_factor
+        #
+        #       rect(
+        #         obstacle_left,
+        #         adjusted_wh - obstacle_top,
+        #         obstacle_left + obstacle_width,
+        #         adjusted_wh - obstacle_top - obstacle_height,
+        #         col = "orange",
+        #         border = "black",
+        #         lwd = 2
+        #       )
+        #     }
+        #   }
+        # }
 
         # 定义 wall_plot() 函数
         wall_plot <- function() {
@@ -239,6 +239,9 @@ finalPage_server <- function(id, input_data, switch_ui) {
     output$splitTileCount <- renderText({
       paste("Split Tiles:", values$split_tiles)
     })
+    output$tileCostSum <- renderText({
+      paste("Tile Cost Summary:", values$tile_cost_sum)
+    })
   })
 }
 
@@ -259,6 +262,25 @@ calculate_adjusted_dimensions <- function(input_data, session) {
     "600x600" = 600,
     "900x900" = 900
   )
+
+  # # 根据选择的图案设置瓷砖尺寸
+  # if (pattern == "Stack") {
+  #   th <- tile_size_value
+  #   tw <- tile_size_value
+  # } else if (pattern == "Herringbone") {
+  #   th <- tile_size_value
+  #   tw <- tile_size_value * 2
+  # } else if (pattern == "Basketweave") {
+  #   th <- tile_size_value
+  #   tw <- tile_size_value * 3 + wall_grout * 2
+  # } else if (pattern == "Lattice") {
+  #   th <- tile_size_value
+  #   tw <- tile_size_value
+  # }
+
+  # th <- th
+  # tw <- th
+
   tw <- th  # Assuming square tiles
 
   max_height <- 0.9 * session$clientData$output_wallPlot_height
@@ -419,40 +441,104 @@ draw_tiles_and_box <- function(input_data, values) {
     ylim = c(0, values$adjusted_wh),
     asp = values$adjusted_ww / values$adjusted_wh
   )
+  pattern_result <- horizontalStack_server(
+    id = "horizontalStack",
+    wall_height = values$adjusted_wh,
+    wall_width = values$adjusted_ww,
+    tile_height = values$adjusted_th,
+    tile_width = values$adjusted_tw,
+    tile_spacing = (wall_grout*values$scale_factor),
+    offset = (wall_offset*values$scale_factor),
+    tile_color = values$tile_color,
+    offset_x = values$offset_x,
+    offset_y = values$offset_y
+  )
 
   # Draw the tiles across the wall area with offsets
-  y_position <- values$offset_y
-  row_counter <- 1
-  while (y_position < values$adjusted_wh + 100) {
-    x_position <- values$offset_x + ifelse(row_counter %% 2 == 0,
-                                           wall_offset * values$scale_factor,
-                                           0)
-    while (x_position < values$adjusted_ww + 100) {
-      # Draw each tile
-      polygon(
-        c(
-          x_position,
-          x_position,
-          x_position + values$adjusted_tw,
-          x_position + values$adjusted_tw
-        ),
-        c(
-          y_position,
-          y_position + values$adjusted_th,
-          y_position + values$adjusted_th,
-          y_position
-        ),
-        col = values$tile_color,
-        border = "black"
-      )
+  # {
+  #   y_position <- values$offset_y
+  #   row_counter <- 1
+  #   while (y_position < values$adjusted_wh + 100) {
+  #     x_position <- values$offset_x + ifelse(row_counter %% 2 == 0,
+  #                                            wall_offset * values$scale_factor,
+  #                                            0)
+  #     while (x_position < values$adjusted_ww + 100) {
+  #       # Draw each tile
+  #       polygon(
+  #         c(
+  #           x_position,
+  #           x_position,
+  #           x_position + values$adjusted_tw,
+  #           x_position + values$adjusted_tw
+  #         ),
+  #         c(
+  #           y_position,
+  #           y_position + values$adjusted_th,
+  #           y_position + values$adjusted_th,
+  #           y_position
+  #         ),
+  #         col = values$tile_color,
+  #         border = "black"
+  #       )
+  #
+  #       # Move to the next tile horizontally
+  #       x_position <- x_position + values$adjusted_tw + wall_grout * values$scale_factor
+  #     }
+  #     # Move to the next row vertically
+  #     y_position <- y_position + values$adjusted_th + wall_grout * values$scale_factor
+  #     row_counter <- row_counter + 1
+  #   }
+  # }
 
-      # Move to the next tile horizontally
-      x_position <- x_position + values$adjusted_tw + wall_grout * values$scale_factor
-    }
-    # Move to the next row vertically
-    y_position <- y_position + values$adjusted_th + wall_grout * values$scale_factor
-    row_counter <- row_counter + 1
-  }
+  # if (userInput_server_return_values$pattern_dropdown() == "Stack") {
+  #   horizontalStack_server(
+  #     id = "horizontalStack",
+  #     wall_height = values$adjusted_wh,
+  #     wall_width = values$adjusted_ww,
+  #     tile_height = values$adjusted_th,
+  #     tile_width = values$adjusted_tw,
+  #     tile_spacing = wall_grout,
+  #     offset = wall_offset * values$scale_factor,
+  #     tile_color = values$tile_color,
+  #     offset_x = values$offset_x,
+  #     offset_y = values$offset_y,
+  #   )
+  # } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
+  #   herringbone_server(
+  #     id = "herringbone",
+  #     wall_height = userInput_server_return_values$wall_height,
+  #     wall_width = userInput_server_return_values$wall_width,
+  #     tile_height = userInput_server_return_values$tile_height,
+  #     tile_width = userInput_server_return_values$tile_width,
+  #     tile_spacing = userInput_server_return_values$tile_spacing,
+  #     tile_color = userInput_server_return_values$tile_color,
+  #     tile_color_2 = userInput_server_return_values$tile_color_2,
+  #   )
+  # } else if (userInput_server_return_values$pattern_dropdown() == "Basketweave") {
+  #   basketweave_server(
+  #     id = "basketweave",
+  #     wall_height = userInput_server_return_values$wall_height,
+  #     wall_width = userInput_server_return_values$wall_width,
+  #     tile_height = userInput_server_return_values$tile_height,
+  #     tile_width = userInput_server_return_values$tile_width,
+  #     tile_spacing = userInput_server_return_values$tile_spacing,
+  #     tile_color = userInput_server_return_values$tile_color,
+  #     tile_color_2 = userInput_server_return_values$tile_color_2,
+  #   )
+  # } else if (userInput_server_return_values$pattern_dropdown() == "Lattice") {
+  #   lattice_server(
+  #     id = "lattice",
+  #     wall_height = userInput_server_return_values$wall_height,
+  #     wall_width = userInput_server_return_values$wall_width,
+  #     tile_height = userInput_server_return_values$tile_height,
+  #     tile_spacing = userInput_server_return_values$tile_spacing,
+  #     tile_color = userInput_server_return_values$tile_color,
+  #     tile_color_2 = userInput_server_return_values$tile_color_2,
+  #   )
+  # }
+
+
+
 
   # Draw the red wall boundary
   rect(

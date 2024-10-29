@@ -97,7 +97,11 @@ tileCountAndCost <- function(box_x, box_y, ww, wh,
     (full_tiles_3 + split_tiles_3) * (tile_3_cost %||% 0) +
     (full_tiles_4 + split_tiles_4) * (tile_4_cost %||% 0)
 
-  cat("tile_cost_sum = ", tile_cost_sum)
+  cat("box_x = ", box_x," \n")
+  cat("box_y = ", box_y," \n")
+  cat("full_tiles = ", full_tiles_1," \n")
+  cat("split_tiles = ", split_tiles_1," \n")
+  cat("tile_cost_sum = ", tile_cost_sum," \n")
 
   return(
     list(
