@@ -1,8 +1,19 @@
 library(shiny)
+library(gridExtra)
+library(grid)
+library(gridBase)
+library(writexl)
+library(openxlsx)
+library(shinyWidgets)
+library(colourpicker)
 
-
-source("R/controller.R")
 source("R/designUI.R")
+source("R/userInput_server.R")
+source("R/obstaclesServer.R")
+source("R/landingPage_server.R")
+source("R/secondPage_server.R")
+source("R/finalPage_server.R")
+source("R/validation_functions.R")
 
 # 导入函数
 source("functions/horizontalStack_server.R")
@@ -29,24 +40,24 @@ server <- function(input, output, session) {
     }
     current_ui(new_ui)
   }
-  
+
   observe({
     ui <- current_ui()
     cat("Switching to UI:", ui, "\n")  # Debugging log
-    
+
     isolate({
       if (ui == "landingPage") {
         output$new_ui_container <- renderUI({
           landingPage_ui("landing_page")
         })
         landingPage_server("landing_page", selected_values = page_data(), switch_ui = switch_ui)
-        
+
       } else if (ui == "secondPage") {
         output$new_ui_container <- renderUI({
           secondPage_ui("second_page")  # Pass stored values
         })
         secondPage_server("second_page", switch_ui = switch_ui)
-        
+
       } else if (ui == "finalPage") {
         output$new_ui_container <- renderUI({
           finalPage_ui("final_page")

@@ -1,8 +1,6 @@
 library(colourpicker)
 library(later)
 
-
-
 userInput_ui <- function(id) {
   ns <- NS(id)
   

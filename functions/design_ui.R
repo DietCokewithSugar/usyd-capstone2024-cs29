@@ -10,9 +10,8 @@ design_ui <- function(id) {
       div(
         style = "margin-top: 20px; text-align: center; display: flex; justify-content: center;",
         div(style = "margin-right: 20px;", textOutput(ns("fullTilesCount"))),
-        div(style = "margin-left: 20px;", textOutput(ns(
-          "splitTilesCount"
-        )))
+        div(style = "margin-left: 20px;", textOutput(ns("splitTilesCount"))),
+        div(style = "margin-left: 20px;", textOutput(ns("tileCostSum"))),
       ),
 
       div(

@@ -218,20 +218,12 @@ lattice_server <- function(id, wall_height, wall_width, tile_height, tile_spacin
 
     }, height = wall_height(), width = wall_width())
 
-    output$fullTiles1Count <- renderText({
-      paste("Full tiles 1:", values$full_tiles_1)
+    output$fullTilesCount <- renderText({
+      paste("Full tiles:", values$full_tiles_1+values$full_tiles_2)
     })
 
-    output$splitTiles1Count <- renderText({
-      paste("Split tiles 1:", values$split_tiles_1)
-    })
-
-    output$fullTiles2Count <- renderText({
-      paste("Full tiles 2:", values$full_tiles_2)
-    })
-
-    output$splitTiles2Count <- renderText({
-      paste("Split tiles 2:", values$split_tiles_2)
+    output$splitTilesCount <- renderText({
+      paste("Split tiles:", values$split_tiles_1 + values$split_tiles_2)
     })
 
     output$tileCostSum <- renderText({

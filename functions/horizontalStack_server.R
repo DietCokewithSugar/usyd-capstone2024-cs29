@@ -216,5 +216,9 @@ horizontalStack_server <- function(id, wall_height, wall_width, tile_height, til
     output$splitTilesCount <- renderText({
       paste("Split tiles:", values$split_tiles)
     })
+
+    output$tileCostSum <- renderText({
+      paste("Tile Cost Summary:", values$tile_cost_sum)
+    })
   })
 }
