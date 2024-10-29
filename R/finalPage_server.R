@@ -53,17 +53,13 @@ finalPage_server <- function(id, input_data, switch_ui) {
         # 确保正确获取 tile_size_value
         tile_size_value <- switch(
           input_data$tile_size,
-          "50x50" = 50,
-          "75x75" = 75,
-          "100x100" = 100,
-          "150x150" = 150,
-          "200x200" = 200,
-          "300x300" = 300,
-          "400x400" = 400,
-          "450x450" = 450,
-          "600x600" = 600,
-          "900x900" = 900,
-          50  # 默认值
+          "10x20" = 10,
+          "25x50" = 20,
+          "50x100" = 50,
+          "75x150" = 75,
+          "100x200" = 100,
+          "150x300" = 150,
+          10  # 默认值
         )
 
         # 使用 isolate() 获取 reactiveValues 值
@@ -184,16 +180,12 @@ calculate_adjusted_dimensions <- function(input_data, session) {
   ww <- input_data$wall_width
   th <- switch(
     input_data$tile_size,
-    "50x50" = 50,
-    "75x75" = 75,
-    "100x100" = 100,
-    "150x150" = 150,
-    "200x200" = 200,
-    "300x300" = 300,
-    "400x400" = 400,
-    "450x450" = 450,
-    "600x600" = 600,
-    "900x900" = 900
+    "10x20" = 10,
+    "25x50" = 20,
+    "50x100" = 50,
+    "75x150" = 75,
+    "100x200" = 100,
+    "150x300" = 150
   )
 
   # # 根据选择的图案设置瓷砖尺寸
@@ -212,9 +204,9 @@ calculate_adjusted_dimensions <- function(input_data, session) {
   # }
 
   # th <- th
-  # tw <- th
+  # tw <- th # Assuming square tiles
 
-  tw <- th * 2  # Assuming square tiles
+  tw <- th * 2
 
   max_height <- 0.9 * session$clientData$output_wallPlot_height
   max_width <- 0.9 * session$clientData$output_wallPlot_width
