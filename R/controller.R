@@ -1,4 +1,8 @@
-source("R/pattern.R")
+source("functions/horizontalStack_server.R")
+source("functions/herringbone_server.R")
+source("functions/basketweave_server.R")
+source("functions/lattice_server.R")
+
 source("R/designUI.R")
 
 library(shiny)
@@ -10,7 +14,7 @@ library(openxlsx)
 library(shinyWidgets)
 library(colourpicker)
 
-userInput_server <- function(id, herringbone_sv) {
+userInput_server <- function(id) {
   
   moduleServer(id, function(input, output, session) {
     
@@ -164,67 +168,7 @@ userInput_server <- function(id, herringbone_sv) {
     
     # 2 way sync
     updating <- reactiveValues(flag = TRUE)
-    
-    observe({
-      
-      if(input$pattern_dropdown == "Herringbone") {
-        
-        observeEvent(input$tile_height_num, {
-          if(input$pattern_dropdown == "Herringbone") {
-            if(updating$flag){
-              updating$flag <- FALSE
-              cat("change tile_height \n")
-              herringbone_sv$tile_height <- input$tile_height_num
-              herringbone_sv$input_type <- "tile_height"
-              later(function() {
-                updating$flag <- TRUE
-              }, 0.5)
-            }
-          }
-        })
-        
-        observeEvent(input$tile_width_num, {
-          if(input$pattern_dropdown == "Herringbone") {
-            if(updating$flag){
-              updating$flag <- FALSE
-              cat("change tile_width \n")
-              herringbone_sv$tile_width <- input$tile_width_num
-              herringbone_sv$input_type <- "tile_width"
-              later(function() {
-                updating$flag <- TRUE
-              }, 0.5)
-            }
-          }
-        })
-        
-        observeEvent(input$tile_ratio_num, {
-          if(input$pattern_dropdown == "Herringbone") {
-            if(updating$flag){
-              updating$flag <- FALSE
-              cat("change tile_ratio \n")
-              herringbone_sv$tile_ratio <- input$tile_ratio_num
-              herringbone_sv$input_type <- "tile_ratio"
-              later(function() {
-                updating$flag <- TRUE
-              }, 0.5)
-            }
-          }
-        })
-        
-        observeEvent(input$tile_spacing_num, {
-          if(input$pattern_dropdown == "Herringbone") {
-            if(updating$flag){
-              updating$flag <- FALSE
-              cat("change tile_spacing \n")
-              later(function() {
-                updating$flag <- TRUE
-              }, 0.5)
-            }
-          }
-        })
-        
-      }
-    })
+
     
     return(
       list(

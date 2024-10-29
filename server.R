@@ -2,19 +2,18 @@ library(shiny)
 
 
 source("R/controller.R")
-source("R/pattern.R")
 source("R/designUI.R")
 
 # 导入函数
-source("functions/herringboneModule.R")
 source("functions/horizontalStack_server.R")
+source("functions/herringbone_server.R")
 source("functions/basketweave_server.R")
 source("functions/lattice_server.R")
+source("functions/tileCountAndCost.R")
 # ... 导入其他函数 ...
 
 server <- function(input, output, session) {
-  herringbone_sv <- reactiveValues(tile_width = 40, tile_height = 20, tile_ratio = 2, input_type = NULL)
-  userInput_server_return_values <- userInput_server("userInput", herringbone_sv)
+  userInput_server_return_values <- userInput_server("userInput")
   obstaclesServer_return_values <- obstaclesServer("obstacles", userInput = userInput_server_return_values)
   
   
@@ -89,11 +88,12 @@ server <- function(input, output, session) {
         obstacles = obstaclesServer_return_values
       )
     } else if (userInput_server_return_values$pattern_dropdown() == "Herringbone") {
-      herringboneModule(
+      herringbone_server(
         id = "herringbone",
         wall_height = userInput_server_return_values$wall_height,
         wall_width = userInput_server_return_values$wall_width,
-        herringbone_sv = herringbone_sv,
+        tile_height = userInput_server_return_values$tile_height,
+        tile_width = userInput_server_return_values$tile_width,
         tile_spacing = userInput_server_return_values$tile_spacing,
         tile_color = userInput_server_return_values$tile_color,
         tile_color_2 = userInput_server_return_values$tile_color_2,
