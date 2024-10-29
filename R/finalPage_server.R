@@ -1,104 +1,31 @@
 finalPage_server <- function(id, input_data, switch_ui) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    # Define reactive values to store the position of the tile grid and tile counts
     values <- reactiveValues(
       offset_x = 0,
       offset_y = 0,
       full_tiles = 0,
       split_tiles = 0,
-      adjusted_wh = 0,
-      adjusted_ww = 0,
-      adjusted_th = 0,
-      adjusted_tw = 0,
-      scale_factor = 1
+      tile_color = "#ADD8E6"
     )
 
-    # Calculate adjusted dimensions and scaling factor globally within the module
-    calculate_adjusted_dimensions <- function() {
-      # Extract wall dimensions and tile sizes
-      wh <- input_data$wall_height
-      ww <- input_data$wall_width
-      th <- switch(
-        input_data$tile_size,
-        "50x50" = 50,
-        "75x75" = 75,
-        "100x100" = 100,
-        "150x150" = 150,
-        "200x200" = 200,
-        "300x300" = 300,
-        "400x400" = 400,
-        "450x450" = 450,
-        "600x600" = 600,
-        "900x900" = 900
-      )
+    # Get adjusted dimensions and store in values
+    adjusted_dims <- calculate_adjusted_dimensions(input_data, session)
+    values$adjusted_wh <- adjusted_dims$adjusted_wh
+    values$adjusted_ww <- adjusted_dims$adjusted_ww
+    values$adjusted_th <- adjusted_dims$adjusted_th
+    values$adjusted_tw <- adjusted_dims$adjusted_tw
+    values$scale_factor <- adjusted_dims$scale_factor
 
-      tw <- switch(
-        input_data$tile_size,
-        "50x50" = 50,
-        "75x75" = 75,
-        "100x100" = 100,
-        "150x150" = 150,
-        "200x200" = 200,
-        "300x300" = 300,
-        "400x400" = 400,
-        "450x450" = 450,
-        "600x600" = 600,
-        "900x900" = 900
-      )
+    # Set up movement controls
+    setup_movement_controls(input, values, function() {
+      recalculate_tiles(input_data, values)
+    })
 
-      # Calculate scaling factor based on available screen size
-      max_height <- 0.9 * session$clientData$output_wallPlot_height
-      max_width <- 0.9 * session$clientData$output_wallPlot_width
-      scale_factor <- min(max_height / wh, max_width / ww, 1)
-
-      # Adjusted dimensions and tile sizes based on scale
-      values$adjusted_wh <- wh * scale_factor
-      values$adjusted_ww <- ww * scale_factor
-      values$adjusted_th <- th * scale_factor
-      values$adjusted_tw <- tw * scale_factor
-      values$scale_factor <- scale_factor
-    }
-
-    # Movement control logic (adjusts grid positions)
-    observeEvent(input$up, {
-      values$offset_y <- values$offset_y + 1
-      recalculate_tiles()
-    })
-    observeEvent(input$down, {
-      values$offset_y <- values$offset_y - 1
-      recalculate_tiles()
-    })
-    observeEvent(input$fast_up, {
-      values$offset_y <- values$offset_y + values$adjusted_th / 2
-      recalculate_tiles()
-    })
-    observeEvent(input$fast_down, {
-      values$offset_y <- values$offset_y - values$adjusted_th / 2
-      recalculate_tiles()
-    })
-    observeEvent(input$left, {
-      values$offset_x <- values$offset_x - 1
-      recalculate_tiles()
-    })
-    observeEvent(input$right, {
-      values$offset_x <- values$offset_x + 1
-      recalculate_tiles()
-    })
-    observeEvent(input$fast_right, {
-      values$offset_x <- values$offset_x + values$adjusted_th / 2
-      recalculate_tiles()
-    })
-    observeEvent(input$fast_left, {
-      values$offset_x <- values$offset_x - values$adjusted_th / 2
-      recalculate_tiles()
-    })
-    observeEvent(input$reset, {
-      values$offset_x <- 0
-      values$offset_y <- 0
-      values$full_tiles <- 0
-      values$split_tiles <- 0
-      recalculate_tiles()
+    # Observe tile color change
+    observeEvent(input$change_color, {
+      values$tile_color <- input$tile_color
+      draw_tiles_and_box(input_data, values)  # Redraw the tiles with the new color
     })
 
     # Render tile plot in UI
@@ -108,186 +35,9 @@ finalPage_server <- function(id, input_data, switch_ui) {
 
     # Render the tile grid and recalculate the tile counts
     output$wallPlot <- renderPlot({
-      calculate_adjusted_dimensions()  # Ensure the dimensions are calculated
-      draw_tiles_and_box()
-      recalculate_tiles()
+      draw_tiles_and_box(input_data, values)
+      recalculate_tiles(input_data, values)
     })
-
-    recalculate_tiles <- function() {
-      full_tiles <- 0
-      split_tiles <- 0
-
-      # Ensure wall_offset, wall_grout, and other input values are numeric
-      wall_offset <- as.numeric(input_data$wall_offset)
-      wall_grout <- as.numeric(input_data$wall_grout)
-      adjusted_th <- as.numeric(values$adjusted_th)
-      adjusted_tw <- as.numeric(values$adjusted_tw)
-      adjusted_ww <- as.numeric(values$adjusted_ww)
-      adjusted_wh <- as.numeric(values$adjusted_wh)
-      offset_x <- as.numeric(values$offset_x)
-      offset_y <- as.numeric(values$offset_y)
-      scale_factor <- as.numeric(values$scale_factor)
-
-      # Ensure none of the values are NA or NULL
-      if (is.na(wall_offset) ||
-        is.na(wall_grout) || is.na(adjusted_th) ||
-        is.na(adjusted_tw) ||
-        is.na(adjusted_ww) || is.na(adjusted_wh) ||
-        is.na(offset_x) ||
-        is.na(offset_y) || is.na(scale_factor)) {
-        warning("One or more input values are missing or invalid.")
-        return(NULL)  # Exit the function if there are invalid values
-      }
-
-      y_position <- offset_y
-      row_counter <- 1
-
-      # Loop through vertical positions
-      while (y_position < adjusted_wh + 100) {
-        # Adjust horizontal offset for every second row
-        x_position <- offset_x + ifelse(row_counter %% 2 == 0, wall_offset * scale_factor, 0)
-
-        # Loop through horizontal positions
-        while (x_position < adjusted_ww + 100) {
-          # Define the boundaries of the current tile
-          tile_left <- x_position
-          tile_right <- x_position + adjusted_tw
-          tile_bottom <- y_position
-          tile_top <- y_position + adjusted_th
-
-          # Define the boundaries of the wall
-          wall_left <- 0
-          wall_right <- adjusted_ww
-          wall_bottom <- 0
-          wall_top <- adjusted_wh
-
-          # Check if the tile is fully within the wall
-          is_full_tile <- (
-            tile_left >= wall_left && tile_right <= wall_right &&
-              tile_bottom >= wall_bottom && tile_top <= wall_top
-          )
-
-          # Check if the tile is split (partially inside and partially outside)
-          is_split_tile <- !is_full_tile && (
-            (tile_left < wall_right &&
-              tile_right > wall_left) &&  # Horizontal overlap
-              (tile_bottom < wall_top &&
-                tile_top > wall_bottom)     # Vertical overlap
-          )
-
-          # Update tile counts
-          if (is_full_tile) {
-            full_tiles <- full_tiles + 1
-          } else if (is_split_tile) {
-            split_tiles <- split_tiles + 1
-          }
-
-          # Move to the next tile horizontally
-          x_position <- x_position + adjusted_tw + wall_grout * scale_factor
-        }
-
-        # Move to the next row vertically
-        y_position <- y_position + adjusted_th + wall_grout * scale_factor
-        row_counter <- row_counter + 1
-      }
-
-      # Update the reactive values for full and split tiles
-      values$full_tiles <- full_tiles
-      values$split_tiles <- split_tiles
-    }
-
-    # Function to draw the tiles, red box, and obstacles
-
-    values$tile_color <- "#ADD8E6"
-
-    observeEvent(input$change_color, {
-      values$tile_color <- input$tile_color
-      draw_tiles_and_box()  # Redraw the tiles with the new color
-    })
-
-
-    draw_tiles_and_box <- function() {
-      # Ensure input_data values are numeric
-      wall_offset <- as.numeric(input_data$wall_offset)
-      wall_grout <- as.numeric(input_data$wall_grout)
-
-      # Set up the plot window
-      plot.new()
-      plot.window(
-        xlim = c(0, values$adjusted_ww),
-        ylim = c(0, values$adjusted_wh),
-        asp = values$adjusted_ww / values$adjusted_wh
-      )
-
-      # Draw the tiles across the wall area with offsets
-      y_position <- values$offset_y
-      row_counter <- 1
-      while (y_position < values$adjusted_wh + 100) {
-        x_position <- values$offset_x + ifelse(row_counter %% 2 == 0,
-                                               wall_offset * values$scale_factor,
-                                               0)
-        while (x_position < values$adjusted_ww + 100) {
-          # Draw each tile
-          polygon(
-            c(
-              x_position,
-              x_position,
-              x_position + values$adjusted_tw,
-              x_position + values$adjusted_tw
-            ),
-            c(
-              y_position,
-              y_position + values$adjusted_th,
-              y_position + values$adjusted_th,
-              y_position
-            ),
-            col = values$tile_color,
-            border = "black"
-          )
-
-          # Move to the next tile horizontally
-          x_position <- x_position + values$adjusted_tw + wall_grout * values$scale_factor
-        }
-        # Move to the next row vertically
-        y_position <- y_position + values$adjusted_th + wall_grout * values$scale_factor
-        row_counter <- row_counter + 1
-      }
-
-      # Draw the red wall boundary
-      rect(
-        0,
-        0,
-        values$adjusted_ww,
-        values$adjusted_wh,
-        border = "red",
-        lwd = 3
-      )
-
-      # Check if obstacles exist and are non-empty
-      if (!is.null(input_data$obstacles) &&
-        length(input_data$obstacles) > 0) {
-        # Draw each obstacle based on its provided dimensions (top, left, width, height)
-        for (obstacle in input_data$obstacles) {
-          # Ensure obstacle dimensions are numeric
-          obstacle_top <- as.numeric(obstacle$top) * values$scale_factor
-          obstacle_left <- as.numeric(obstacle$left) * values$scale_factor
-          obstacle_width <- as.numeric(obstacle$width) * values$scale_factor
-          obstacle_height <- as.numeric(obstacle$height) * values$scale_factor
-
-          # Draw the obstacle with correct dimensions and flipping on the y-axis
-          rect(
-            obstacle_left,
-            values$adjusted_wh - obstacle_top,
-            # Flip y-axis for plotting
-            obstacle_left + obstacle_width,
-            values$adjusted_wh - obstacle_top - obstacle_height,
-            col = "orange",
-            border = "black",
-            lwd = 2
-          )
-        }
-      }
-    }
 
     output$download_plot <- downloadHandler(
       filename = function() {
@@ -490,4 +240,252 @@ finalPage_server <- function(id, input_data, switch_ui) {
       paste("Split Tiles:", values$split_tiles)
     })
   })
+}
+
+# Extracted function to calculate adjusted dimensions
+calculate_adjusted_dimensions <- function(input_data, session) {
+  wh <- input_data$wall_height
+  ww <- input_data$wall_width
+  th <- switch(
+    input_data$tile_size,
+    "50x50" = 50,
+    "75x75" = 75,
+    "100x100" = 100,
+    "150x150" = 150,
+    "200x200" = 200,
+    "300x300" = 300,
+    "400x400" = 400,
+    "450x450" = 450,
+    "600x600" = 600,
+    "900x900" = 900
+  )
+  tw <- th  # Assuming square tiles
+
+  max_height <- 0.9 * session$clientData$output_wallPlot_height
+  max_width <- 0.9 * session$clientData$output_wallPlot_width
+  scale_factor <- min(max_height / wh, max_width / ww, 1)
+
+  adjusted_wh <- wh * scale_factor
+  adjusted_ww <- ww * scale_factor
+  adjusted_th <- th * scale_factor
+  adjusted_tw <- tw * scale_factor
+
+  list(
+    adjusted_wh = adjusted_wh,
+    adjusted_ww = adjusted_ww,
+    adjusted_th = adjusted_th,
+    adjusted_tw = adjusted_tw,
+    scale_factor = scale_factor
+  )
+}
+
+# Extracted function to set up movement controls
+setup_movement_controls <- function(input, values, recalculate_tiles) {
+  observeEvent(input$up, {
+    values$offset_y <- values$offset_y + 1
+    recalculate_tiles()
+  })
+  observeEvent(input$down, {
+    values$offset_y <- values$offset_y - 1
+    recalculate_tiles()
+  })
+  observeEvent(input$fast_up, {
+    values$offset_y <- values$offset_y + values$adjusted_th / 2
+    recalculate_tiles()
+  })
+  observeEvent(input$fast_down, {
+    values$offset_y <- values$offset_y - values$adjusted_th / 2
+    recalculate_tiles()
+  })
+  observeEvent(input$left, {
+    values$offset_x <- values$offset_x - 1
+    recalculate_tiles()
+  })
+  observeEvent(input$right, {
+    values$offset_x <- values$offset_x + 1
+    recalculate_tiles()
+  })
+  observeEvent(input$fast_right, {
+    values$offset_x <- values$offset_x + values$adjusted_th / 2
+    recalculate_tiles()
+  })
+  observeEvent(input$fast_left, {
+    values$offset_x <- values$offset_x - values$adjusted_th / 2
+    recalculate_tiles()
+  })
+  observeEvent(input$reset, {
+    values$offset_x <- 0
+    values$offset_y <- 0
+    values$full_tiles <- 0
+    values$split_tiles <- 0
+    recalculate_tiles()
+  })
+}
+
+# Extracted function to recalculate tile counts
+recalculate_tiles <- function(input_data, values) {
+  full_tiles <- 0
+  split_tiles <- 0
+
+  # Ensure wall_offset, wall_grout, and other input values are numeric
+  wall_offset <- as.numeric(input_data$wall_offset)
+  wall_grout <- as.numeric(input_data$wall_grout)
+  adjusted_th <- as.numeric(values$adjusted_th)
+  adjusted_tw <- as.numeric(values$adjusted_tw)
+  adjusted_ww <- as.numeric(values$adjusted_ww)
+  adjusted_wh <- as.numeric(values$adjusted_wh)
+  offset_x <- as.numeric(values$offset_x)
+  offset_y <- as.numeric(values$offset_y)
+  scale_factor <- as.numeric(values$scale_factor)
+
+  # Ensure none of the values are NA or NULL
+  if (is.na(wall_offset) ||
+    is.na(wall_grout) || is.na(adjusted_th) ||
+    is.na(adjusted_tw) ||
+    is.na(adjusted_ww) || is.na(adjusted_wh) ||
+    is.na(offset_x) ||
+    is.na(offset_y) || is.na(scale_factor)) {
+    warning("One or more input values are missing or invalid.")
+    return(NULL)  # Exit the function if there are invalid values
+  }
+
+  y_position <- offset_y
+  row_counter <- 1
+
+  # Loop through vertical positions
+  while (y_position < adjusted_wh + 100) {
+    # Adjust horizontal offset for every second row
+    x_position <- offset_x + ifelse(row_counter %% 2 == 0, wall_offset * scale_factor, 0)
+
+    # Loop through horizontal positions
+    while (x_position < adjusted_ww + 100) {
+      # Define the boundaries of the current tile
+      tile_left <- x_position
+      tile_right <- x_position + adjusted_tw
+      tile_bottom <- y_position
+      tile_top <- y_position + adjusted_th
+
+      # Define the boundaries of the wall
+      wall_left <- 0
+      wall_right <- adjusted_ww
+      wall_bottom <- 0
+      wall_top <- adjusted_wh
+
+      # Check if the tile is fully within the wall
+      is_full_tile <- (
+        tile_left >= wall_left && tile_right <= wall_right &&
+          tile_bottom >= wall_bottom && tile_top <= wall_top
+      )
+
+      # Check if the tile is split (partially inside and partially outside)
+      is_split_tile <- !is_full_tile && (
+        (tile_left < wall_right &&
+          tile_right > wall_left) &&  # Horizontal overlap
+        (tile_bottom < wall_top &&
+          tile_top > wall_bottom)     # Vertical overlap
+      )
+
+      # Update tile counts
+      if (is_full_tile) {
+        full_tiles <- full_tiles + 1
+      } else if (is_split_tile) {
+        split_tiles <- split_tiles + 1
+      }
+
+      # Move to the next tile horizontally
+      x_position <- x_position + adjusted_tw + wall_grout * scale_factor
+    }
+
+    # Move to the next row vertically
+    y_position <- y_position + adjusted_th + wall_grout * scale_factor
+    row_counter <- row_counter + 1
+  }
+
+  # Update the reactive values for full and split tiles
+  values$full_tiles <- full_tiles
+  values$split_tiles <- split_tiles
+}
+
+# Extracted function to draw tiles and wall boundary
+draw_tiles_and_box <- function(input_data, values) {
+  # Ensure input_data values are numeric
+  wall_offset <- as.numeric(input_data$wall_offset)
+  wall_grout <- as.numeric(input_data$wall_grout)
+
+  # Set up the plot window
+  plot.new()
+  plot.window(
+    xlim = c(0, values$adjusted_ww),
+    ylim = c(0, values$adjusted_wh),
+    asp = values$adjusted_ww / values$adjusted_wh
+  )
+
+  # Draw the tiles across the wall area with offsets
+  y_position <- values$offset_y
+  row_counter <- 1
+  while (y_position < values$adjusted_wh + 100) {
+    x_position <- values$offset_x + ifelse(row_counter %% 2 == 0,
+                                           wall_offset * values$scale_factor,
+                                           0)
+    while (x_position < values$adjusted_ww + 100) {
+      # Draw each tile
+      polygon(
+        c(
+          x_position,
+          x_position,
+          x_position + values$adjusted_tw,
+          x_position + values$adjusted_tw
+        ),
+        c(
+          y_position,
+          y_position + values$adjusted_th,
+          y_position + values$adjusted_th,
+          y_position
+        ),
+        col = values$tile_color,
+        border = "black"
+      )
+
+      # Move to the next tile horizontally
+      x_position <- x_position + values$adjusted_tw + wall_grout * values$scale_factor
+    }
+    # Move to the next row vertically
+    y_position <- y_position + values$adjusted_th + wall_grout * values$scale_factor
+    row_counter <- row_counter + 1
+  }
+
+  # Draw the red wall boundary
+  rect(
+    0,
+    0,
+    values$adjusted_ww,
+    values$adjusted_wh,
+    border = "red",
+    lwd = 3
+  )
+
+  # Check if obstacles exist and are non-empty
+  if (!is.null(input_data$obstacles) &&
+    length(input_data$obstacles) > 0) {
+    # Draw each obstacle based on its provided dimensions (top, left, width, height)
+    for (obstacle in input_data$obstacles) {
+      # Ensure obstacle dimensions are numeric
+      obstacle_top <- as.numeric(obstacle$top) * values$scale_factor
+      obstacle_left <- as.numeric(obstacle$left) * values$scale_factor
+      obstacle_width <- as.numeric(obstacle$width) * values$scale_factor
+      obstacle_height <- as.numeric(obstacle$height) * values$scale_factor
+
+      # Draw the obstacle with correct dimensions and flipping on the y-axis
+      rect(
+        obstacle_left,
+        values$adjusted_wh - obstacle_top,
+        # Flip y-axis for plotting
+        obstacle_left + obstacle_width,
+        values$adjusted_wh - obstacle_top - obstacle_height,
+        col = "orange",
+        border = "black",
+        lwd = 2
+      )
+    }
+  }
 }
